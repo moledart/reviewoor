@@ -8,7 +8,7 @@ const LangSwitcher = () => {
     <div className="flex justify-center gap-2">
       <button
         className={`${
-          lang === "ru" ? "font-bold" : "font-normal"
+          lang === "ru" ? "font-bold" : "font-light"
         } hover:text-pink-700`}
         onClick={() => setLang("ru")}
       >
@@ -16,7 +16,7 @@ const LangSwitcher = () => {
       </button>
       <button
         className={`${
-          lang === "en" ? "font-bold" : "font-normal"
+          lang === "en" ? "font-bold" : "font-light"
         } hover:text-pink-700`}
         onClick={() => setLang("en")}
       >

@@ -3,6 +3,7 @@ import Head from "next/head";
 import { signIn, signOut, useSession } from "next-auth/react";
 
 import { trpc } from "../utils/trpc";
+import Navigation from "../components/Navigation";
 
 const Home: NextPage = () => {
   const { data: session } = useSession();
@@ -32,20 +33,9 @@ const Home: NextPage = () => {
         />
         <link rel="manifest" href="favicon/site.webmanifest" />
       </Head>
+      <Navigation />
       <main className="flex min-h-screen flex-col items-center justify-center">
-        <div>
-          {session?.user?.name}
-          <button
-            className="mb-2 border border-gray-900 py-2 text-lg transition-all duration-75 hover:bg-gray-900 hover:text-gray-50"
-            onClick={() => signOut()}
-          >
-            Logout
-          </button>
-        </div>
-        <div className="container flex flex-col items-center justify-center gap-12 px-4 py-16 ">
-          <img src="/logo.png" alt="" />
-          <h1 className="text-3xl font-bold">Start the reviewoooring</h1>
-        </div>
+        <div></div>
       </main>
     </>
   );
