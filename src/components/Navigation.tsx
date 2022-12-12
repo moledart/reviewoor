@@ -1,46 +1,51 @@
 import { useSession } from "next-auth/react";
-import Image from "next/image";
 import { useRouter } from "next/router";
+import Link from "next/link";
+import Image from "next/image";
 import logo from "../../public/logo.png";
 import Account from "./Account";
-import Button from "./Button";
-import ThemeSwitcher from "./ThemeSwitcher";
+import { Box, Button } from "@mantine/core";
 import { HiOutlinePencilSquare } from "react-icons/hi2";
-import Menu from "./Menu";
-import { useState } from "react";
+import { useAtom } from "jotai";
+import { langSwitcherAtom } from "../atoms/lang";
 
 const Navigation = () => {
   const { data: session } = useSession();
   const router = useRouter();
-  const [menuVisible, setMenuVisible] = useState(true);
+  const [lang] = useAtom(langSwitcherAtom);
 
   return (
-    <nav className="relative flex items-center gap-8 py-6 px-5 md:px-14">
-      <div className="mr-auto flex items-center gap-2">
+    <Box className="flex items-center gap-4 py-6 px-5 md:px-14">
+      <Link href="/" className="mr-auto">
         <Image src={logo} alt="Typewriter" width={40} height={40} />
-        <span className="font-serif text-2xl font-light uppercase ">
-          re:view
-        </span>
-      </div>
-
-      <div className="hidden md:flex">
-        <Button
-          icon={<HiOutlinePencilSquare size={20} />}
-          title="New review"
-          handleClick={() => router.push("/review-editor")}
-          primary={true}
-        />
-      </div>
-      <ThemeSwitcher />
+      </Link>
       {session ? (
         <>
-          <Account setMenuVisible={setMenuVisible} />
-          {menuVisible && <Menu setMenuVisible={setMenuVisible} />}
+          <Button
+            leftIcon={<HiOutlinePencilSquare size={14} />}
+            size="md"
+            className="bg-zinc-800"
+            color="dark"
+            fw="400"
+            onClick={() => router.push("/review-editor")}
+          >
+            {lang === "ru" ? "Новая рецензия" : "New review"}
+          </Button>
+          <Account />
         </>
       ) : (
-        <Button title="Login" handleClick={() => router.push("/login")} />
+        <Button
+          leftIcon={<HiOutlinePencilSquare size={14} />}
+          size="md"
+          className="bg-zinc-800"
+          color="dark"
+          fw="400"
+          onClick={() => router.push("/login")}
+        >
+          Login
+        </Button>
       )}
-    </nav>
+    </Box>
   );
 };
 

@@ -1,14 +1,16 @@
-import { signIn, signOut, useSession } from "next-auth/react";
+import logo from "../../../public/logo.png";
+import { signIn, useSession } from "next-auth/react";
+import { useRouter } from "next/router";
+import Image from "next/image";
+// Lang
+import { useAtom } from "jotai";
 import content from "../../lang/login";
 import { langSwitcherAtom } from "../../atoms/lang";
-import { useAtom } from "jotai";
-import logo from "../../../public/logo.png";
-import { useRouter } from "next/router";
+//Components
 import LangSwitcher from "../../components/LangSwitcher";
 import ThemeSwitcher from "../../components/ThemeSwitcher";
-import Button from "../../components/Button";
 
-import Image from "next/image";
+import { Center, Stack, Text, Title, Button, Container } from "@mantine/core";
 
 const Login = () => {
   const { data: session } = useSession();
@@ -24,23 +26,49 @@ const Login = () => {
   };
 
   return (
-    <div className="container mx-auto flex min-h-screen max-w-xs flex-col items-stretch justify-center gap-6">
-      <div className="px-20">
-        <Image src={logo} alt="Typewriter" />
-      </div>
-      <div className="flex flex-col items-center font-serif">
-        <h1 className=" text-4xl font-semibold">{content.header[lang]}</h1>
-        <p className=" text-zinc-500">{content.subheader[lang]}</p>
-      </div>
-      <div className="flex flex-col gap-2">
-        <Button title="Github" handleClick={handleLoginMethod("github")} />
-        <Button title="Discord" handleClick={handleLoginMethod("discord")} />
-      </div>
-      <div className="flex flex-col items-center justify-center gap-6">
-        <LangSwitcher />
-        <ThemeSwitcher />
-      </div>
-    </div>
+    <Container className="max-w-sm">
+      <Center className="min-h-screen">
+        <Stack spacing="xl">
+          <Center className="px-4">
+            <Image src={logo} alt="Typewriter" className="h-auto max-w-full" />
+          </Center>
+          <Stack align="center" className="gap-0">
+            <Title order={1} align="center">
+              {content.header[lang]}
+            </Title>
+            <Text c="dimmed" align="center">
+              {content.subheader[lang]}
+            </Text>
+          </Stack>
+          <Stack spacing="xs">
+            <Button
+              fullWidth
+              size="lg"
+              className="bg-zinc-800"
+              color="dark"
+              fw="400"
+              onClick={handleLoginMethod("github")}
+            >
+              Github
+            </Button>
+            <Button
+              fullWidth
+              size="lg"
+              className="bg-zinc-800"
+              color="dark"
+              fw="400"
+              onClick={handleLoginMethod("discord")}
+            >
+              Discord
+            </Button>
+          </Stack>
+          <LangSwitcher />
+          <Center>
+            <ThemeSwitcher />
+          </Center>
+        </Stack>
+      </Center>
+    </Container>
   );
 };
 

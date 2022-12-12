@@ -1,10 +1,13 @@
-import React from "react";
+import Navigation from "../../components/Navigation";
 
 const index = () => {
   return (
-    <div>
-      <div>index</div>
-    </div>
+    <>
+      <Navigation />
+      <main className="flex min-h-screen flex-col items-center justify-center">
+        <div></div>
+      </main>
+    </>
   );
 };
 

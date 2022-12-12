@@ -1,19 +1,18 @@
-import { useAtom } from "jotai";
-import { themeSwitcherAtom } from "../atoms/theme";
 import { IoSunnyOutline, IoMoon } from "react-icons/io5";
+import { ActionIcon, useMantineColorScheme } from "@mantine/core";
 
 const ThemeSwitcher = () => {
-  const [darkTheme, setDarkTheme] = useAtom(themeSwitcherAtom);
-
-  console.log(typeof (<IoSunnyOutline size={24} />));
+  const { colorScheme, toggleColorScheme } = useMantineColorScheme();
+  const dark = colorScheme === "dark";
 
   return (
-    <button
-      className="flex items-center "
-      onClick={() => setDarkTheme((prev) => !prev)}
+    <ActionIcon
+      onClick={() => toggleColorScheme()}
+      title="Toggle color scheme"
+      variant="light"
     >
-      {darkTheme ? <IoSunnyOutline size={24} /> : <IoMoon size={24} />}
-    </button>
+      {dark ? <IoSunnyOutline size={24} /> : <IoMoon size={24} />}
+    </ActionIcon>
   );
 };
 

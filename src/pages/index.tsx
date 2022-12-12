@@ -1,13 +1,12 @@
 import { type NextPage } from "next";
 import Head from "next/head";
-import { signIn, signOut, useSession } from "next-auth/react";
+import { useSession } from "next-auth/react";
 
 import { trpc } from "../utils/trpc";
 import Navigation from "../components/Navigation";
 
 const Home: NextPage = () => {
   const { data: session } = useSession();
-  console.log(session);
 
   return (
     <>
@@ -34,7 +33,7 @@ const Home: NextPage = () => {
         <link rel="manifest" href="favicon/site.webmanifest" />
       </Head>
       <Navigation />
-      <main className="flex min-h-screen flex-col items-center justify-center">
+      <main className="flex  flex-col items-center justify-center">
         <div></div>
       </main>
     </>
