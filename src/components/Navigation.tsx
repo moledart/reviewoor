@@ -35,7 +35,6 @@ const Navigation = () => {
         </>
       ) : (
         <Button
-          leftIcon={<HiOutlinePencilSquare size={14} />}
           size="md"
           className="bg-zinc-800"
           color="dark"

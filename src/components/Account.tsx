@@ -28,13 +28,7 @@ const Account = () => {
   // const ref = useClickOutside(() => setOpened(false));
 
   return (
-    <Menu
-      shadow="md"
-      width={200}
-      position="bottom-end"
-      opened={opened}
-      //@ts-ignore
-    >
+    <Menu shadow="md" width={200} position="bottom-end" opened={opened}>
       <Menu.Target>
         <UnstyledButton onClick={() => setOpened((prev) => !prev)}>
           <Image
@@ -48,7 +42,7 @@ const Account = () => {
       </Menu.Target>
       <Menu.Dropdown>
         <Menu.Label>{content.menu[lang]}</Menu.Label>
-        <Link href="/profile">
+        <Link href="/profile" className="no-underline">
           <Menu.Item icon={<IoPersonOutline size={14} />}>
             {content.profile[lang]}
           </Menu.Item>
