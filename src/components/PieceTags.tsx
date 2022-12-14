@@ -5,7 +5,7 @@ import { MultiSelect } from "@mantine/core";
 import { FormInputProps } from "./PieceTitle";
 import { useState } from "react";
 
-export const PieceTags = ({ review, setReview }: FormInputProps) => {
+const PieceTags = ({ review, setReview }: FormInputProps) => {
   const { data: tags } = trpc.tags.getAll.useQuery();
   const [value, setValue] = useState<string[]>([]);
   console.log(review.tags);
@@ -40,3 +40,5 @@ export const PieceTags = ({ review, setReview }: FormInputProps) => {
     />
   );
 };
+
+export default PieceTags;

@@ -1,11 +1,11 @@
 import { Center, Container, Stack } from "@mantine/core";
-import Navigation from "../../components/Navigation";
-import { PieceTitle } from "../../components/PieceTitle";
-import PieceRating from "../../components/PieceRating";
 import { useState } from "react";
 import { useSession } from "next-auth/react";
 import { LoginButton } from "../../components/LoginButton";
-import { PieceTags } from "../../components/PieceTags";
+import Navigation from "../../components/Navigation";
+import PieceTitle from "../../components/PieceTitle";
+import PieceRating from "../../components/PieceRating";
+import PieceTags from "../../components/PieceTags";
 
 export type NewReviewFormData = {
   title: string;

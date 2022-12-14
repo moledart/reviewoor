@@ -10,7 +10,6 @@ import { Dispatch, forwardRef, SetStateAction, useRef, useState } from "react";
 import { debounce } from "lodash";
 import { env } from "../env/client.mjs";
 import { NewReviewFormData } from "../pages/review-editor/index.jsx";
-import PreviousMap from "postcss/lib/previous-map.js";
 
 export const createSearchUrl = (search: string) =>
   `https://www.googleapis.com/books/v1/volumes?q=intitle:${search}&maxResults=40&key=${env.NEXT_PUBLIC_GOOGLE_BOOKS_API}`;
@@ -20,7 +19,7 @@ export type FormInputProps = {
   setReview: Dispatch<SetStateAction<NewReviewFormData>>;
 };
 
-export const PieceTitle = ({ review, setReview }: FormInputProps) => {
+const PieceTitle = ({ review, setReview }: FormInputProps) => {
   const [input, setInput] = useState("");
   const [booksSearchResult, setBooksSearchResult] = useState([]);
 
@@ -87,7 +86,7 @@ interface ItemProps extends SelectItemProps {
   group: string;
 }
 
-export const AutoCompleteItem = forwardRef<HTMLDivElement, ItemProps>(
+const AutoCompleteItem = forwardRef<HTMLDivElement, ItemProps>(
   ({ authors, value, label, image, ...others }: ItemProps, ref) => (
     <div ref={ref} {...others}>
       <Group noWrap>
@@ -103,3 +102,5 @@ export const AutoCompleteItem = forwardRef<HTMLDivElement, ItemProps>(
     </div>
   )
 );
+
+export default PieceTitle;
