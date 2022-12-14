@@ -1,14 +1,50 @@
+import { Center, Container, Stack } from "@mantine/core";
 import Navigation from "../../components/Navigation";
+import { PieceTitle } from "../../components/PieceTitle";
+import PieceRating from "../../components/PieceRating";
+import { useState } from "react";
+import { useSession } from "next-auth/react";
+import { LoginButton } from "../../components/LoginButton";
+import { PieceTags } from "../../components/PieceTags";
 
-const index = () => {
+export type NewReviewFormData = {
+  title: string;
+  reviewedPieceId: string;
+  content: string | null;
+  authorRating: number;
+  tags: string[];
+};
+
+const ReviewEditor = () => {
+  const { data: session } = useSession();
+
+  const [review, setReview] = useState<NewReviewFormData>({
+    title: "",
+    reviewedPieceId: "",
+    content: "",
+    authorRating: 5,
+    tags: [],
+  });
+
+  if (!session)
+    return (
+      <Center className="min-h-screen">
+        <LoginButton />
+      </Center>
+    );
+
   return (
     <>
       <Navigation />
-      <main className="flex min-h-screen flex-col items-center justify-center">
-        <div></div>
-      </main>
+      <Container className="max-w-[70ch]">
+        <Stack spacing="xl">
+          <PieceTitle review={review} setReview={setReview} />
+          <PieceRating review={review} setReview={setReview} />
+          <PieceTags review={review} setReview={setReview} />
+        </Stack>
+      </Container>
     </>
   );
 };
 
-export default index;
+export default ReviewEditor;

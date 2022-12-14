@@ -71,21 +71,21 @@ model VerificationToken {
 }
 
 model Review {
-  id           String       @id @default(cuid())
-  createdAt    DateTime     @default(now())
-  published    Boolean      @default(false)
-  title        String
-  author       User         @relation(fields: [authorId], references: [id])
-  authorId     String
-  subjectTitle String
-  group        Group        @relation(fields: [groupId], references: [id])
-  groupId      String
-  tags         Tag[]
-  content      String?
-  authorRating Int
-  comments     Comment[]
-  like         Like[]
-  userRating   UserRating[]
+  id              String       @id @default(cuid())
+  createdAt       DateTime     @default(now())
+  published       Boolean      @default(false)
+  title           String
+  author          User         @relation(fields: [authorId], references: [id])
+  authorId        String
+  reviewedPieceId String
+  group           Group        @relation(fields: [groupId], references: [id])
+  groupId         String
+  tags            Tag[]
+  content         String?
+  authorRating    Int
+  comments        Comment[]
+  like            Like[]
+  userRating      UserRating[]
 }
 
 model Group {

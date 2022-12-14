@@ -29,7 +29,7 @@ const Login = () => {
     <Container className="max-w-sm">
       <Center className="min-h-screen">
         <Stack spacing="xl">
-          <Center className="px-4">
+          <Center className="px-16">
             <Image src={logo} alt="Typewriter" className="h-auto max-w-full" />
           </Center>
           <Stack align="center" className="gap-0">

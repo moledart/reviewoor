@@ -8,6 +8,7 @@ import { Box, Button } from "@mantine/core";
 import { HiOutlinePencilSquare } from "react-icons/hi2";
 import { useAtom } from "jotai";
 import { langSwitcherAtom } from "../atoms/lang";
+import { LoginButton } from "./LoginButton";
 
 const Navigation = () => {
   const { data: session } = useSession();
@@ -21,28 +22,34 @@ const Navigation = () => {
       </Link>
       {session ? (
         <>
-          <Button
-            leftIcon={<HiOutlinePencilSquare size={14} />}
-            size="md"
-            className="bg-zinc-800"
-            color="dark"
-            fw="400"
-            onClick={() => router.push("/review-editor")}
-          >
-            {lang === "ru" ? "Новая рецензия" : "New review"}
-          </Button>
+          {router.pathname === "/review-editor" ? (
+            <Button
+              leftIcon={<HiOutlinePencilSquare size={14} />}
+              size="md"
+              className="bg-zinc-800"
+              color="dark"
+              fw="400"
+              onClick={() => router.push("/review-editor")}
+            >
+              {lang === "ru" ? "Опубликовать" : "Publish"}
+            </Button>
+          ) : (
+            <Button
+              leftIcon={<HiOutlinePencilSquare size={14} />}
+              size="md"
+              className="bg-zinc-800"
+              color="dark"
+              fw="400"
+              onClick={() => router.push("/review-editor")}
+            >
+              {lang === "ru" ? "Новая рецензия" : "New review"}
+            </Button>
+          )}
+
           <Account />
         </>
       ) : (
-        <Button
-          size="md"
-          className="bg-zinc-800"
-          color="dark"
-          fw="400"
-          onClick={() => router.push("/login")}
-        >
-          Login
-        </Button>
+        <LoginButton />
       )}
     </Box>
   );

@@ -36,6 +36,7 @@ export const serverSchema = z.object({
  */
 export const clientSchema = z.object({
   // NEXT_PUBLIC_CLIENTVAR: z.string(),
+  NEXT_PUBLIC_GOOGLE_BOOKS_API: z.string(),
 });
 
 /**
@@ -46,4 +47,5 @@ export const clientSchema = z.object({
  */
 export const clientEnv = {
   // NEXT_PUBLIC_CLIENTVAR: process.env.NEXT_PUBLIC_CLIENTVAR,
+  NEXT_PUBLIC_GOOGLE_BOOKS_API: process.env.NEXT_PUBLIC_GOOGLE_BOOKS_API,
 };
