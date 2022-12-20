@@ -3,31 +3,40 @@ import { trpc } from "../utils/trpc";
 import { useQueryClient } from "@tanstack/react-query";
 import { MultiSelect } from "@mantine/core";
 import { FormInputProps } from "./PieceTitle";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { Tag } from "@prisma/client";
 
 const PieceTags = ({ review, setReview }: FormInputProps) => {
   const { data: tags } = trpc.tags.getAll.useQuery();
-  const [value, setValue] = useState<string[]>([]);
+  const [selectOptions, setSelectOptions] = useState<string[]>([]);
+
+  useEffect(() => {
+    if (tags) setSelectOptions(tags.map((tag) => tag.name));
+  }, [tags]);
+
+  const handleChange = (value: string | string[]) => {
+    setReview((prev) => ({ ...prev, tags: [...value] }));
+  };
+
+  const handleCreate = (value: string) => {
+    setSelectOptions((prev) => [...prev, value]);
+    handleChange(value);
+    return value;
+  };
+
   console.log(review.tags);
 
   return (
     <MultiSelect
       label="Add tags"
-      data={tags ? tags.map((tag) => tag.name) : []}
+      data={selectOptions}
       icon={<HiOutlineHashtag size={12} />}
       placeholder="Add tags"
       limit={20}
       getCreateLabel={(newTag) => `+ Create ${newTag}`}
-      onCreate={(newTag) => {
-        setReview((prev) =>
-          newTag ? { ...prev, tags: [...prev.tags, newTag] } : prev
-        );
-        return newTag;
-      }}
-      // value={review.tags}
-      onChange={(newTags) =>
-        setReview((prev) => (newTags ? { ...prev, tags: newTags } : prev))
-      }
+      onCreate={handleCreate}
+      value={review.tags}
+      onChange={handleChange}
       styles={{
         label: {
           marginBottom: 8,

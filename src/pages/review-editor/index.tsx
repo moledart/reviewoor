@@ -6,6 +6,8 @@ import Navigation from "../../components/Navigation";
 import PieceTitle from "../../components/PieceTitle";
 import PieceRating from "../../components/PieceRating";
 import PieceTags from "../../components/PieceTags";
+import PieceThumbnail from "../../components/PieceThumbnail";
+import { string } from "zod";
 
 export type NewReviewFormData = {
   title: string;
@@ -13,6 +15,7 @@ export type NewReviewFormData = {
   content: string | null;
   authorRating: number;
   tags: string[];
+  thumbnail: string;
 };
 
 const ReviewEditor = () => {
@@ -23,7 +26,8 @@ const ReviewEditor = () => {
     reviewedPieceId: "",
     content: "",
     authorRating: 5,
-    tags: [],
+    tags: ["bestseller"],
+    thumbnail: "",
   });
 
   if (!session)
@@ -41,6 +45,7 @@ const ReviewEditor = () => {
           <PieceTitle review={review} setReview={setReview} />
           <PieceRating review={review} setReview={setReview} />
           <PieceTags review={review} setReview={setReview} />
+          <PieceThumbnail review={review} setReview={setReview} />
         </Stack>
       </Container>
     </>
