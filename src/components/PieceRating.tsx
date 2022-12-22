@@ -1,8 +1,9 @@
 import { Rating, Stack, Text } from "@mantine/core";
-import React from "react";
-import { FormInputProps } from "./PieceTitle";
+import { useAtom } from "jotai";
+import reviewForm from "../atoms/reviewFormData";
 
-const PieceRating = ({ review, setReview }: FormInputProps) => {
+const PieceRating = () => {
+  const [authorRating, setAuthorRating] = useAtom(reviewForm.authorRatingAtom);
   return (
     <Stack spacing={8}>
       <Text size="sm">How would you rate it?</Text>
@@ -10,12 +11,8 @@ const PieceRating = ({ review, setReview }: FormInputProps) => {
         defaultValue={7}
         size="lg"
         count={10}
-        value={review.authorRating}
-        onChange={(rating) =>
-          setReview((prev) =>
-            rating ? { ...prev, authorRating: rating } : prev
-          )
-        }
+        value={authorRating}
+        onChange={(rating) => setAuthorRating(rating)}
       />
     </Stack>
   );

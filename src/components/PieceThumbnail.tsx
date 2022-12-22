@@ -10,12 +10,12 @@ import {
   CloseButton,
 } from "@mantine/core";
 import { Dropzone, IMAGE_MIME_TYPE, FileWithPath } from "@mantine/dropzone";
-import { FormInputProps } from "./PieceTitle";
 import { IconUpload, IconPhoto, IconX } from "@tabler/icons";
-import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
-import { storage } from "../server/firebaseConfig";
+import { useAtom } from "jotai";
+import reviewForm from "../atoms/reviewFormData";
 
-const PieceThumbnail = ({ review, setReview }: FormInputProps) => {
+const PieceThumbnail = () => {
+  const [thumbnail, setThumbnail] = useAtom(reviewForm.thumbnailAtom);
   const [files, setFiles] = useState<FileWithPath[]>([]);
   const [imageUrl, setImageUrl] = useState<string | null>(null);
 
@@ -25,7 +25,7 @@ const PieceThumbnail = ({ review, setReview }: FormInputProps) => {
     setFiles(files);
     if (files[0]) {
       const imageUrl = URL.createObjectURL(files[0]);
-      setReview((prev) => ({ ...prev, thumbnail: imageUrl }));
+      setThumbnail(imageUrl);
     }
   };
 
@@ -34,8 +34,8 @@ const PieceThumbnail = ({ review, setReview }: FormInputProps) => {
   }, [files]);
 
   useEffect(() => {
-    if (review.thumbnail) {
-      setImageUrl(review.thumbnail);
+    if (thumbnail) {
+      setImageUrl(thumbnail);
     }
   }, []);
 

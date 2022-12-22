@@ -1,21 +1,21 @@
 import { HiOutlineHashtag } from "react-icons/hi2";
 import { trpc } from "../utils/trpc";
-import { useQueryClient } from "@tanstack/react-query";
 import { MultiSelect } from "@mantine/core";
-import { FormInputProps } from "./PieceTitle";
 import { useEffect, useState } from "react";
-import { Tag } from "@prisma/client";
+import { useAtom } from "jotai";
+import reviewForm from "../atoms/reviewFormData";
 
-const PieceTags = ({ review, setReview }: FormInputProps) => {
+const PieceTags = () => {
   const { data: tags } = trpc.tags.getAll.useQuery();
   const [selectOptions, setSelectOptions] = useState<string[]>([]);
+  const [reviewTags, setReviewTags] = useAtom(reviewForm.tagsAtom);
 
   useEffect(() => {
     if (tags) setSelectOptions(tags.map((tag) => tag.name));
   }, [tags]);
 
   const handleChange = (value: string | string[]) => {
-    setReview((prev) => ({ ...prev, tags: [...value] }));
+    setReviewTags([...value]);
   };
 
   const handleCreate = (value: string) => {
@@ -33,7 +33,7 @@ const PieceTags = ({ review, setReview }: FormInputProps) => {
       limit={20}
       getCreateLabel={(newTag) => `+ Create ${newTag}`}
       onCreate={handleCreate}
-      value={review.tags}
+      value={reviewTags}
       onChange={handleChange}
       styles={{
         label: {

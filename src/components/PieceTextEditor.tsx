@@ -9,13 +9,17 @@ import SubScript from "@tiptap/extension-subscript";
 import Document from "@tiptap/extension-document";
 import Placeholder from "@tiptap/extension-placeholder";
 import { Stack, Text } from "@mantine/core";
-import { FormInputProps } from "./PieceTitle";
+import { useAtom } from "jotai";
+import reviewForm from "../atoms/reviewFormData";
 
 const CustomDocument = Document.extend({
   content: "heading block*",
 });
 
-const PieceTextEditor = ({ review, setReview }: FormInputProps) => {
+const PieceTextEditor = () => {
+  const [reviewContent, setReviewContent] = useAtom(reviewForm.contentAtom);
+  const [, setReviewTitle] = useAtom(reviewForm.titleAtom);
+
   const editor = useEditor({
     extensions: [
       CustomDocument,
@@ -38,13 +42,14 @@ const PieceTextEditor = ({ review, setReview }: FormInputProps) => {
         },
       }),
     ],
-    content: review.content,
+    content: reviewContent,
     onUpdate({ editor }) {
       const content = editor.getJSON();
       const title = content.content
         ?.find((element) => element.type === "heading")
         ?.content?.at(0)?.text;
-      setReview((prev) => ({ ...prev, content, title: title || "" }));
+      setReviewContent(content);
+      setReviewTitle(title || "");
     },
   });
 

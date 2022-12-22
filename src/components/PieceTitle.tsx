@@ -15,27 +15,17 @@ import {
   useState,
 } from "react";
 import { debounce } from "lodash";
-import { NewReviewFormData } from "../pages/review-editor/index.jsx";
 import { searchBooksOnGoogle } from "../utils/utils";
+import { useAtom } from "jotai";
+import reviewForm, { BookFromGoogle } from "../atoms/reviewFormData";
 
-export type BookFromGoogle = {
-  value: string;
-  label: string;
-  authors: string;
-  published: string;
-  image: string;
-  group: string;
-};
-
-export type FormInputProps = {
-  review: NewReviewFormData;
-  setReview: Dispatch<SetStateAction<NewReviewFormData>>;
-};
-
-const PieceTitle = ({ review, setReview }: FormInputProps) => {
+const PieceTitle = () => {
   const [input, setInput] = useState("");
   const [booksSearchResult, setBooksSearchResult] = useState<BookFromGoogle[]>(
     []
+  );
+  const [reviewedPiece, setReviewedPiece] = useAtom(
+    reviewForm.reviewedPieceAtom
   );
 
   const debouncedSearch = useRef(
@@ -51,13 +41,11 @@ const PieceTitle = ({ review, setReview }: FormInputProps) => {
 
   const handleTitleValueChange = (id: string) => {
     const chosenBook = booksSearchResult.find((book) => book.value === id);
-    if (chosenBook)
-      setReview((prev) => ({ ...prev, reviewedPiece: chosenBook }));
+    if (chosenBook) setReviewedPiece(chosenBook);
   };
 
   useEffect(() => {
-    if (review.reviewedPiece !== null)
-      setBooksSearchResult([review.reviewedPiece]);
+    if (reviewedPiece !== null) setBooksSearchResult([reviewedPiece]);
   }, []);
 
   return (
@@ -65,7 +53,7 @@ const PieceTitle = ({ review, setReview }: FormInputProps) => {
       label="Choose a book"
       placeholder="The Night In Lisbon"
       searchable
-      value={review.reviewedPiece?.value}
+      value={reviewedPiece?.value.split("?")[0]}
       onChange={handleTitleValueChange}
       searchValue={input}
       onSearchChange={handleSearchTitleChange}
@@ -102,7 +90,7 @@ const AutoCompleteItem = forwardRef<HTMLDivElement, ItemProps>(
         <div>
           <Text>{label}</Text>
           <Text size="xs" color="dimmed">
-            {authors?.join(", ")}
+            {authors}
           </Text>
         </div>
       </Group>

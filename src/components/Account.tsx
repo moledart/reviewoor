@@ -49,14 +49,18 @@ const Account = () => {
         </Link>
         <Menu.Item
           icon={<IoLanguageOutline size={14} />}
-          rightSection={<Text color="dimmed">{lang}</Text>}
+          rightSection={
+            <Text color="dimmed" className="flex items-center">
+              {lang}
+            </Text>
+          }
           onClick={() => setLang((prev) => (prev === "ru" ? "en" : "ru"))}
         >
           {content.language[lang]}
         </Menu.Item>
         <Menu.Item
           rightSection={
-            <Text color="dimmed">
+            <Text color="dimmed" className="flex items-center">
               {colorScheme === "light" ? (
                 <IoSunnyOutline size={14} />
               ) : (

@@ -69,27 +69,31 @@ const initialData = {
     "https://firebasestorage.googleapis.com/v0/b/reviewoor-5c6c1.appspot.com/o/thumbnails?alt=media&token=e8bb8716-a152-4ea8-8746-ed9ce0ee1166",
 };
 
-export const reviewFormDataAtom = atom<NewReviewFormData>(initialData);
+export const dataAtom = atom<NewReviewFormData>(initialData);
 
-export const reviewFormTitleAtom = focusAtom(reviewFormDataAtom, (optic) =>
-  optic.prop("title")
-);
-export const reviewFormGroupAtom = focusAtom(reviewFormDataAtom, (optic) =>
-  optic.prop("group")
-);
-export const reviewFormPieceAtom = focusAtom(reviewFormDataAtom, (optic) =>
+export const titleAtom = focusAtom(dataAtom, (optic) => optic.prop("title"));
+export const groupAtom = focusAtom(dataAtom, (optic) => optic.prop("group"));
+export const reviewedPieceAtom = focusAtom(dataAtom, (optic) =>
   optic.prop("reviewedPiece")
 );
-export const reviewFormContentAtom = focusAtom(reviewFormDataAtom, (optic) =>
+export const contentAtom = focusAtom(dataAtom, (optic) =>
   optic.prop("content")
 );
-export const reviewFormAuthorRatingAtom = focusAtom(
-  reviewFormDataAtom,
-  (optic) => optic.prop("authorRating")
+export const authorRatingAtom = focusAtom(dataAtom, (optic) =>
+  optic.prop("authorRating")
 );
-export const reviewFormTagsAtom = focusAtom(reviewFormDataAtom, (optic) =>
-  optic.prop("tags")
-);
-export const reviewFormThumbnailAtom = focusAtom(reviewFormDataAtom, (optic) =>
+export const tagsAtom = focusAtom(dataAtom, (optic) => optic.prop("tags"));
+export const thumbnailAtom = focusAtom(dataAtom, (optic) =>
   optic.prop("thumbnail")
 );
+
+export default {
+  dataAtom,
+  titleAtom,
+  groupAtom,
+  reviewedPieceAtom,
+  contentAtom,
+  authorRatingAtom,
+  tagsAtom,
+  thumbnailAtom,
+};

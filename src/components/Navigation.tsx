@@ -8,14 +8,22 @@ import { Box, Button } from "@mantine/core";
 import { HiOutlinePencilSquare } from "react-icons/hi2";
 import { useAtom } from "jotai";
 import { langSwitcherAtom } from "../atoms/lang";
-import { isReadyForPublishingAtom } from "../atoms/isReadyForPublishing";
 import { LoginButton } from "./LoginButton";
+import { useEffect, useState } from "react";
+import reviewForm, { dataAtom } from "../atoms/reviewFormData";
 
 const Navigation = () => {
   const { data: session } = useSession();
   const router = useRouter();
   const [lang] = useAtom(langSwitcherAtom);
-  const [isReadyForPublishing] = useAtom(isReadyForPublishingAtom);
+  const [isReadyForPublishing, setIsReadyForPublishing] = useState(false);
+  const [formData] = useAtom(reviewForm.dataAtom);
+
+  useEffect(() => {
+    formData.title.length > 0 && formData.reviewedPiece && formData.content
+      ? setIsReadyForPublishing(true)
+      : setIsReadyForPublishing(false);
+  }, [formData]);
 
   return (
     <Box className="flex items-center gap-4 py-6 px-5 md:px-14">
