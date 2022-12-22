@@ -15,6 +15,7 @@ const postSchema = z.object({
   tags: z.array(z.string()).optional(),
   content: z.any(),
   authorRating: z.number().min(0).max(10),
+  thumbnail: z.string(),
 });
 
 export default { postSchema };

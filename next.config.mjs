@@ -27,6 +27,18 @@ const config = {
         port: "",
         pathname: "/**",
       },
+      {
+        protocol: "https",
+        hostname: "firebasestorage.googleapis.com",
+        port: "",
+        pathname: "/**",
+      },
+      {
+        protocol: "https",
+        hostname: "books.google.com",
+        port: "",
+        pathname: "/books/**",
+      },
     ],
   },
 };

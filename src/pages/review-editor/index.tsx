@@ -8,13 +8,9 @@ import PieceRating from "../../components/PieceRating";
 import PieceTags from "../../components/PieceTags";
 import PieceThumbnail from "../../components/PieceThumbnail";
 import PieceTextEditor from "../../components/PieceTextEditor";
-import { useAtom } from "jotai";
-import { isReadyForPublishingAtom } from "../../atoms/isReadyForPublishing";
 
 const ReviewEditor = () => {
   const { data: session } = useSession();
-  const [, setIsReadyForPublishing] = useAtom(isReadyForPublishingAtom);
-
 
   if (!session)
     return (

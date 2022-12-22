@@ -13,25 +13,25 @@ import { Dropzone, IMAGE_MIME_TYPE, FileWithPath } from "@mantine/dropzone";
 import { IconUpload, IconPhoto, IconX } from "@tabler/icons";
 import { useAtom } from "jotai";
 import reviewForm from "../atoms/reviewFormData";
+import { thumbnailBlobAtom } from "../atoms/thumbnailBlob";
 
 const PieceThumbnail = () => {
-  const [thumbnail, setThumbnail] = useAtom(reviewForm.thumbnailAtom);
-  const [files, setFiles] = useState<FileWithPath[]>([]);
+  const [thumbnail] = useAtom(reviewForm.thumbnailAtom);
+  const [thumbnailBlob, setThumbnailBlob] = useAtom(thumbnailBlobAtom);
+
   const [imageUrl, setImageUrl] = useState<string | null>(null);
 
   const theme = useMantineTheme();
 
   const handleChangeThumbnail = (files: FileWithPath[]) => {
-    setFiles(files);
-    if (files[0]) {
-      const imageUrl = URL.createObjectURL(files[0]);
-      setThumbnail(imageUrl);
-    }
+    setThumbnailBlob(files);
   };
 
   useEffect(() => {
-    files[0] ? setImageUrl(URL.createObjectURL(files[0])) : setImageUrl(null);
-  }, [files]);
+    thumbnailBlob[0]
+      ? setImageUrl(URL.createObjectURL(thumbnailBlob[0]))
+      : setImageUrl(null);
+  }, [thumbnailBlob]);
 
   useEffect(() => {
     if (thumbnail) {
@@ -54,7 +54,7 @@ const PieceThumbnail = () => {
               className="absolute top-0 right-0 mx-auto"
               title="Remove image"
               iconSize={14}
-              onClick={() => setFiles([])}
+              onClick={() => setThumbnailBlob([])}
               variant="filled"
             />
           </Box>

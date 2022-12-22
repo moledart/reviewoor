@@ -41,7 +41,7 @@ const PieceTitle = () => {
 
   const handleTitleValueChange = (id: string) => {
     const chosenBook = booksSearchResult.find((book) => book.value === id);
-    if (chosenBook) setReviewedPiece(chosenBook);
+    chosenBook ? setReviewedPiece(chosenBook) : setReviewedPiece(null);
   };
 
   useEffect(() => {
@@ -53,11 +53,11 @@ const PieceTitle = () => {
       label="Choose a book"
       placeholder="The Night In Lisbon"
       searchable
-      value={reviewedPiece?.value.split("?")[0]}
+      value={reviewedPiece?.value}
       onChange={handleTitleValueChange}
       searchValue={input}
       onSearchChange={handleSearchTitleChange}
-      data={booksSearchResult}
+      data={booksSearchResult || []}
       itemComponent={AutoCompleteItem}
       nothingFound="No books with this title, sorry"
       maxDropdownHeight={280}
@@ -69,6 +69,7 @@ const PieceTitle = () => {
           fontSize: 14,
         },
       }}
+      clearable
     />
   );
 };
