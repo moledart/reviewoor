@@ -24,8 +24,6 @@ const PieceTags = ({ review, setReview }: FormInputProps) => {
     return value;
   };
 
-  console.log(review.tags);
-
   return (
     <MultiSelect
       label="Add tags"

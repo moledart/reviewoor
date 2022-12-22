@@ -71,21 +71,32 @@ model VerificationToken {
 }
 
 model Review {
-  id              String       @id @default(cuid())
-  createdAt       DateTime     @default(now())
-  published       Boolean      @default(false)
+  id              String        @id @default(cuid())
+  createdAt       DateTime      @default(now())
+  published       Boolean       @default(false)
   title           String
-  author          User         @relation(fields: [authorId], references: [id])
+  author          User          @relation(fields: [authorId], references: [id])
   authorId        String
+  reviewedPiece   ReviewedPiece @relation(fields: [reviewedPieceId], references: [id])
   reviewedPieceId String
-  group           Group        @relation(fields: [groupId], references: [id])
+  group           Group         @relation(fields: [groupId], references: [id])
   groupId         String
   tags            Tag[]
-  content         String?
+  content         Json
   authorRating    Int
   comments        Comment[]
   like            Like[]
   userRating      UserRating[]
+}
+
+model ReviewedPiece {
+  id        String   @id @default(cuid())
+  value     String   @unique
+  label     String
+  authors   String
+  published String
+  image     String
+  reviews   Review[]
 }
 
 model Group {

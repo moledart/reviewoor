@@ -1,40 +1,24 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   Text,
   Image,
   Stack,
-  Group,
   useMantineTheme,
   Box,
   SimpleGrid,
   Flex,
   CloseButton,
-  Button,
 } from "@mantine/core";
 import { Dropzone, IMAGE_MIME_TYPE, FileWithPath } from "@mantine/dropzone";
 import { FormInputProps } from "./PieceTitle";
 import { IconUpload, IconPhoto, IconX } from "@tabler/icons";
-import { IoCloseOutline } from "react-icons/io5";
-import {
-  getDownloadURL,
-  ref,
-  uploadBytes,
-  uploadString,
-} from "firebase/storage";
+import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
 import { storage } from "../server/firebaseConfig";
-
-const saveImageToStorage = async (
-  thumbnailFile: FileWithPath,
-  title: string
-) => {
-  const thumbnailRef = ref(storage, `thumbnails/${title}/`);
-  await uploadBytes(thumbnailRef, thumbnailFile);
-  const thumbnailStorageUrl = await getDownloadURL(thumbnailRef);
-  console.log(thumbnailStorageUrl);
-};
 
 const PieceThumbnail = ({ review, setReview }: FormInputProps) => {
   const [files, setFiles] = useState<FileWithPath[]>([]);
+  const [imageUrl, setImageUrl] = useState<string | null>(null);
+
   const theme = useMantineTheme();
 
   const handleChangeThumbnail = (files: FileWithPath[]) => {
@@ -45,29 +29,31 @@ const PieceThumbnail = ({ review, setReview }: FormInputProps) => {
     }
   };
 
-  const previews = files.map((file, index) => {
-    const imageUrl = URL.createObjectURL(file);
-    return (
-      <Image
-        key={index}
-        src={imageUrl}
-        imageProps={{ onLoad: () => URL.revokeObjectURL(imageUrl) }}
-      />
-    );
-  });
+  useEffect(() => {
+    files[0] ? setImageUrl(URL.createObjectURL(files[0])) : setImageUrl(null);
+  }, [files]);
+
+  useEffect(() => {
+    if (review.thumbnail) {
+      setImageUrl(review.thumbnail);
+    }
+  }, []);
 
   return (
     <Stack spacing={8}>
       <Text size="sm">Add a thumbnail</Text>
 
-      <SimpleGrid cols={previews.length ? 2 : 1}>
-        {previews.length > 0 && (
+      <SimpleGrid cols={imageUrl ? 2 : 1}>
+        {imageUrl && (
           <Box className="relative">
-            {previews}{" "}
+            <Image
+              src={imageUrl}
+              imageProps={{ onLoad: () => URL.revokeObjectURL(imageUrl) }}
+            />
             <CloseButton
               className="absolute top-0 right-0 mx-auto"
               title="Remove image"
-              iconSize={20}
+              iconSize={14}
               onClick={() => setFiles([])}
               variant="filled"
             />
@@ -86,7 +72,7 @@ const PieceThumbnail = ({ review, setReview }: FormInputProps) => {
           >
             <Dropzone.Accept>
               <IconUpload
-                size={50}
+                size={20}
                 stroke={1.5}
                 color={theme.colors.dark[theme.colorScheme === "dark" ? 4 : 6]}
               />

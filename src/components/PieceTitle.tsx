@@ -6,13 +6,26 @@ import {
   SelectItemProps,
   Text,
 } from "@mantine/core";
-import { Dispatch, forwardRef, SetStateAction, useRef, useState } from "react";
+import {
+  Dispatch,
+  forwardRef,
+  SetStateAction,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
 import { debounce } from "lodash";
-import { env } from "../env/client.mjs";
 import { NewReviewFormData } from "../pages/review-editor/index.jsx";
+import { searchBooksOnGoogle } from "../utils/utils";
 
-export const createSearchUrl = (search: string) =>
-  `https://www.googleapis.com/books/v1/volumes?q=intitle:${search}&maxResults=40&key=${env.NEXT_PUBLIC_GOOGLE_BOOKS_API}`;
+export type BookFromGoogle = {
+  value: string;
+  label: string;
+  authors: string;
+  published: string;
+  image: string;
+  group: string;
+};
 
 export type FormInputProps = {
   review: NewReviewFormData;
@@ -21,27 +34,13 @@ export type FormInputProps = {
 
 const PieceTitle = ({ review, setReview }: FormInputProps) => {
   const [input, setInput] = useState("");
-  const [booksSearchResult, setBooksSearchResult] = useState([]);
-
-  const getBookTitlesFromGoogle = async (title: string) => {
-    const response = await fetch(createSearchUrl(title));
-    const data = await response.json();
-    const bookTitles = data?.items?.map((book: any) => {
-      return {
-        value: book.id,
-        label: book.volumeInfo.title,
-        authors: book.volumeInfo.authors,
-        published: book.volumeInfo.publishedDate,
-        image: book.volumeInfo.imageLinks?.smallThumbnail || "",
-        group: "Books",
-      };
-    });
-    return bookTitles;
-  };
+  const [booksSearchResult, setBooksSearchResult] = useState<BookFromGoogle[]>(
+    []
+  );
 
   const debouncedSearch = useRef(
     debounce(async (title) => {
-      setBooksSearchResult(await getBookTitlesFromGoogle(title));
+      setBooksSearchResult(await searchBooksOnGoogle("title", title));
     }, 200)
   ).current;
 
@@ -50,23 +49,31 @@ const PieceTitle = ({ review, setReview }: FormInputProps) => {
     setInput(title);
   };
 
+  const handleTitleValueChange = (id: string) => {
+    const chosenBook = booksSearchResult.find((book) => book.value === id);
+    if (chosenBook)
+      setReview((prev) => ({ ...prev, reviewedPiece: chosenBook }));
+  };
+
+  useEffect(() => {
+    if (review.reviewedPiece !== null)
+      setBooksSearchResult([review.reviewedPiece]);
+  }, []);
+
   return (
     <Select
       label="Choose a book"
       placeholder="The Night In Lisbon"
       searchable
-      value={review.reviewedPieceId}
-      onChange={(id) =>
-        setReview((prev) => (id ? { ...prev, reviewedPieceId: id } : prev))
-      }
+      value={review.reviewedPiece?.value}
+      onChange={handleTitleValueChange}
       searchValue={input}
       onSearchChange={handleSearchTitleChange}
       data={booksSearchResult}
       itemComponent={AutoCompleteItem}
-      clearable
       nothingFound="No books with this title, sorry"
       maxDropdownHeight={280}
-      // disabling client-side filtering hack
+      // disabling client-side filtering
       filter={() => true}
       styles={{
         label: {
