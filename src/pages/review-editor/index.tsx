@@ -1,5 +1,5 @@
-import { Center, Container, Stack } from "@mantine/core";
-import { useEffect } from "react";
+import { Center, Container, LoadingOverlay, Stack } from "@mantine/core";
+import { useEffect, useState } from "react";
 import { useSession } from "next-auth/react";
 import { LoginButton } from "../../components/LoginButton";
 import Navigation from "../../components/Navigation";
@@ -8,9 +8,11 @@ import PieceRating from "../../components/PieceRating";
 import PieceTags from "../../components/PieceTags";
 import PieceThumbnail from "../../components/PieceThumbnail";
 import PieceTextEditor from "../../components/PieceTextEditor";
+import { useCreateReview } from "../../hooks/useCreateReview";
 
 const ReviewEditor = () => {
   const { data: session } = useSession();
+  const { isLoading, isError } = useCreateReview();
 
   if (!session)
     return (
@@ -22,7 +24,8 @@ const ReviewEditor = () => {
   return (
     <>
       <Navigation />
-      <Container className="max-w-[70ch] pb-12">
+      <Container className="relative max-w-[70ch] pb-12">
+        <LoadingOverlay visible={isLoading} overlayBlur={2} />
         <Stack spacing="xl">
           <PieceTitle />
           <PieceRating />

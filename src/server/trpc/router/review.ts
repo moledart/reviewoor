@@ -17,6 +17,24 @@ export const reviewRouter = router({
       },
     });
   }),
+  getTop: publicProcedure.query(({ ctx }) => {
+    return ctx.prisma.review.findMany({
+      include: {
+        like: true,
+        reviewedPiece: true,
+        tags: true,
+        group: true,
+        userRating: true,
+        author: true,
+        _count: {
+          select: {
+            like: true,
+          },
+        },
+      },
+      take: 5,
+    });
+  }),
   create: protectedProcedure
     .input(schema.postSchema)
     .mutation(async ({ input, ctx }) => {

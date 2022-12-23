@@ -11,9 +11,8 @@ import { langSwitcherAtom } from "../atoms/lang";
 import { LoginButton } from "./LoginButton";
 import { useEffect, useState } from "react";
 import reviewForm from "../atoms/reviewFormData";
-import { trpc } from "../utils/trpc";
-import { thumbnailBlobAtom } from "../atoms/thumbnailBlob";
-import { saveImageToStorage } from "../utils/utils";
+
+import { useCreateReview } from "../hooks/useCreateReview";
 
 const Navigation = () => {
   const { data: session } = useSession();
@@ -21,37 +20,7 @@ const Navigation = () => {
   const [lang] = useAtom(langSwitcherAtom);
   const [isReadyForPublishing, setIsReadyForPublishing] = useState(false);
   const [formData] = useAtom(reviewForm.dataAtom);
-  const [thumbnailBlob] = useAtom(thumbnailBlobAtom);
-
-  const { mutate: createReview } = trpc.review.create.useMutation();
-  const handleCreateReview = async () => {
-    let {
-      authorRating,
-      content,
-      group,
-      reviewedPiece,
-      tags,
-      thumbnail,
-      title,
-    } = formData;
-
-    if (thumbnailBlob[0]) {
-      thumbnail = await saveImageToStorage(thumbnailBlob[0], title);
-    }
-
-    if (reviewedPiece) {
-      createReview({
-        authorRating,
-        group,
-        reviewedPiece,
-        title,
-        content,
-        tags,
-        thumbnail,
-      });
-    }
-    router.push("/");
-  };
+  const { handleCreateReview, isLoading, isError } = useCreateReview();
 
   useEffect(() => {
     formData.title.length > 0 && formData.reviewedPiece && formData.content

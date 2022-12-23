@@ -74,7 +74,7 @@ model Review {
   id              String        @id @default(cuid())
   createdAt       DateTime      @default(now())
   published       Boolean       @default(false)
-  thumbnail       String
+  thumbnail       String?       @db.VarChar(1000)
   title           String
   author          User          @relation(fields: [authorId], references: [id])
   authorId        String

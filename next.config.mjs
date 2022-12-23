@@ -34,7 +34,7 @@ const config = {
         pathname: "/**",
       },
       {
-        protocol: "https",
+        protocol: "http",
         hostname: "books.google.com",
         port: "",
         pathname: "/books/**",

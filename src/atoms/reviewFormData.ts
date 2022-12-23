@@ -21,55 +21,24 @@ export type BookFromGoogle = {
   group: string;
 };
 
-const initialData = {
-  title: "This works",
-  group: "Books",
+export const initialFormData = {
+  title: "",
+  group: "",
   reviewedPiece: {
-    group: "Books",
-    image:
-      "http://books.google.com/books/content?id=mRTCswEACAAJ&printsec=frontcover&img=1&zoom=5&source=gbs_api",
-    label: "Night",
-    published: "2013-09-10",
-    value: "mRTCswEACAAJ",
-    authors: "Elie Wiesel",
+    group: "",
+    image: "",
+    label: "",
+    published: "",
+    value: "",
+    authors: "",
   },
-  content: {
-    type: "doc",
-    content: [
-      {
-        type: "heading",
-        attrs: {
-          textAlign: "left",
-          level: 1,
-        },
-        content: [
-          {
-            type: "text",
-            text: "This works",
-          },
-        ],
-      },
-      {
-        type: "paragraph",
-        attrs: {
-          textAlign: "left",
-        },
-        content: [
-          {
-            type: "text",
-            text: "this should too",
-          },
-        ],
-      },
-    ],
-  },
-  authorRating: 8,
-  tags: ["bestseller"],
-  thumbnail:
-    "https://firebasestorage.googleapis.com/v0/b/reviewoor-5c6c1.appspot.com/o/thumbnails?alt=media&token=e8bb8716-a152-4ea8-8746-ed9ce0ee1166",
+  content: null,
+  authorRating: 0,
+  tags: [],
+  thumbnail: "",
 };
 
-export const dataAtom = atom<NewReviewFormData>(initialData);
+export const dataAtom = atom<NewReviewFormData>(initialFormData);
 
 export const titleAtom = focusAtom(dataAtom, (optic) => optic.prop("title"));
 export const groupAtom = focusAtom(dataAtom, (optic) => optic.prop("group"));
