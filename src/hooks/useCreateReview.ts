@@ -27,15 +27,9 @@ export const useCreateReview = () => {
   });
 
   const handleCreateReview = async () => {
-    let {
-      authorRating,
-      content,
-      group,
-      reviewedPiece,
-      tags,
-      thumbnail,
-      title,
-    } = formData;
+    const { authorRating, content, group, reviewedPiece, tags, title } =
+      formData;
+    let { thumbnail } = formData;
 
     if (thumbnailBlob[0]) {
       thumbnail = await saveImageToStorage(thumbnailBlob[0], title);
