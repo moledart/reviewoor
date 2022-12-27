@@ -25,7 +25,13 @@ export const TopReviewCard = ({ reviewId }: { reviewId: string }) => {
       className={theme.colorScheme === "light" ? "bg-white" : "bg-[#1A1B1E]"}
     >
       <Card.Section className="relative">
-        <Image src={review?.thumbnail} alt={review?.title} className="w-full" />
+        {review?.thumbnail && (
+          <Image
+            src={review?.thumbnail}
+            alt={review?.title}
+            className="w-full"
+          />
+        )}
         <CardContent reviewId={reviewId} />
         <Space h="xl" />
         <PiecePreview reviewId={reviewId} />
