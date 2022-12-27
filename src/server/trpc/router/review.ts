@@ -2,39 +2,47 @@ import { z } from "zod";
 import schema from "../schemas";
 
 import { router, publicProcedure, protectedProcedure } from "../trpc";
+import { inputRegex } from "@tiptap/extension-highlight";
 
 export const reviewRouter = router({
   getAll: publicProcedure.query(({ ctx }) => {
     return ctx.prisma.review.findMany({
-      include: {
-        comments: true,
-        like: true,
-        reviewedPiece: true,
-        tags: true,
-        group: true,
-        userRating: true,
-        author: true,
+      select: {
+        id: true,
+      },
+      orderBy: {
+        createdAt: "desc",
       },
     });
   }),
   getTop: publicProcedure.query(({ ctx }) => {
     return ctx.prisma.review.findMany({
-      include: {
-        like: true,
-        reviewedPiece: true,
-        tags: true,
-        group: true,
-        userRating: true,
-        author: true,
-        _count: {
-          select: {
-            like: true,
-          },
-        },
+      select: {
+        id: true,
       },
       take: 5,
     });
   }),
+  getById: publicProcedure
+    .input(z.object({ id: z.string() }))
+    .query(({ ctx, input }) => {
+      return ctx.prisma.review.findUnique({
+        where: {
+          id: input.id,
+        },
+        select: {
+          author: true,
+          userRating: true,
+          group: true,
+          reviewedPiece: true,
+          tags: true,
+          authorRating: true,
+          title: true,
+          thumbnail: true,
+          createdAt: true,
+        },
+      });
+    }),
   create: protectedProcedure
     .input(schema.postSchema)
     .mutation(async ({ input, ctx }) => {

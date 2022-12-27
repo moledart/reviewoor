@@ -3,15 +3,15 @@ import { z } from "zod";
 import { router, publicProcedure, protectedProcedure } from "../trpc";
 
 export const likeRouter = router({
-  // getLike: publicProcedure
-  //   .input(z.object({ reviewId: z.string() }))
-  //   .query(({ ctx, input }) => {
-  //     return ctx.prisma.like.findMany({
-  //       where: {
-  //         reviewId: input.reviewId,
-  //       },
-  //     });
-  //   }),
+  getLikes: publicProcedure
+    .input(z.object({ reviewId: z.string() }))
+    .query(({ ctx, input }) => {
+      return ctx.prisma.like.findMany({
+        where: {
+          reviewId: input.reviewId,
+        },
+      });
+    }),
   like: protectedProcedure
     .input(z.object({ reviewId: z.string() }))
     .mutation(async ({ input, ctx }) => {

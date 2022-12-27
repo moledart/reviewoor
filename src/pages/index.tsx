@@ -1,19 +1,14 @@
 import { type NextPage } from "next";
 import Head from "next/head";
-import { useSession } from "next-auth/react";
-
 import { trpc } from "../utils/trpc";
 import Navigation from "../components/Navigation";
 import {
-  Box,
-  Card,
   Container,
-  Flex,
-  Group,
-  Text,
-  Image,
   Title,
-  ActionIcon,
+  Stack,
+  Badge,
+  Group,
+  useMantineTheme,
 } from "@mantine/core";
 import { Carousel } from "@mantine/carousel";
 import {
@@ -25,10 +20,14 @@ import {
   User,
   Tag,
 } from "@prisma/client";
-import { IoHeart, IoHeartOutline, IoStarOutline } from "react-icons/io5";
-import { useLike } from "../hooks/useLike";
+import { TopReviewCard } from "../components/TopReviewCard";
+import { useRouter } from "next/router";
+import homePage from "../lang/homepage";
+import { useAtom } from "jotai";
+import { langSwitcherAtom } from "../atoms/lang";
+import { ReviewCard } from "../components/ReviewCard";
 
-type ReviewCardProps = Review & {
+export type ReviewCardProps = Review & {
   reviewedPiece: ReviewedPiece;
   group: TGroup;
   like: Like[];
@@ -38,8 +37,15 @@ type ReviewCardProps = Review & {
 };
 
 const Home: NextPage = () => {
-  const { data: session } = useSession();
-  const { data: reviews } = trpc.review.getTop.useQuery();
+  const { data: topReviewIds } = trpc.review.getTop.useQuery();
+  const { data: reviewIds } = trpc.review.getAll.useQuery();
+
+  // gotta change to most popular tags
+  const { data: tags } = trpc.tags.getAll.useQuery();
+  const theme = useMantineTheme();
+  const [lang] = useAtom(langSwitcherAtom);
+
+  const router = useRouter();
 
   return (
     <>
@@ -67,123 +73,57 @@ const Home: NextPage = () => {
       </Head>
       <Navigation />
       <Container className="pb-12">
-        <Title order={1} mb={28}>
-          Top Stories
-        </Title>
-        <Carousel
-          withControls={false}
-          slideGap={40}
-          slideSize="25%"
-          breakpoints={[
-            { maxWidth: "md", slideSize: "50%" },
-            { maxWidth: "sm", slideSize: "90%", slideGap: 30 },
-          ]}
-          align="start"
-        >
-          {reviews?.map((review) => (
-            <Carousel.Slide key={review.id}>
-              <TopReviewCard {...review} />
-            </Carousel.Slide>
-          ))}
-        </Carousel>
+        <Stack spacing={40}>
+          <Stack spacing="lg">
+            <Title order={1}>{homePage.topTitle[lang]}</Title>
+            <Carousel
+              withControls={false}
+              slideGap={32}
+              slideSize="25%"
+              breakpoints={[
+                { maxWidth: "md", slideSize: "50%" },
+                { maxWidth: "sm", slideSize: "90%", slideGap: 24 },
+              ]}
+              align="start"
+            >
+              {topReviewIds?.map(({ id }) => (
+                <Carousel.Slide key={id}>
+                  <TopReviewCard reviewId={id} />
+                </Carousel.Slide>
+              ))}
+            </Carousel>
+          </Stack>
+          <Stack spacing="lg">
+            <Title order={1}>{homePage.tagsTitle[lang]}</Title>
+            <Group spacing="xs">
+              {tags?.map((tag) => (
+                <Badge
+                  key={tag.id}
+                  className={`cursor-pointer lowercase ${
+                    theme.colorScheme === "light"
+                      ? "hover:text-zinc-900"
+                      : "hover:text-pink-600"
+                  } `}
+                  color="gray"
+                  onClick={() => router.push(`/reviews/${tag.name}`)}
+                >
+                  #{tag.name}
+                </Badge>
+              ))}
+            </Group>
+          </Stack>
+          <Stack spacing="lg">
+            <Title order={1}>{homePage.allReviewsTitle[lang]}</Title>
+            <Stack spacing={32}>
+              {reviewIds?.map(({ id }) => (
+                <ReviewCard reviewId={id} key={id} />
+              ))}
+            </Stack>
+          </Stack>
+        </Stack>
       </Container>
     </>
   );
 };
 
 export default Home;
-
-const TopReviewCard = ({
-  author,
-  thumbnail,
-  title,
-  group,
-  content,
-  createdAt,
-  reviewedPiece,
-  userRating,
-  like,
-  id,
-}: ReviewCardProps) => {
-  const averageRating =
-    userRating.reduce((total, current) => total + current.rating, 0) /
-    userRating.length;
-  const { data: session } = useSession();
-
-  const { handleLikeReview } = useLike();
-  const hasUserLikedAlready = like.find(
-    (like) => like.userId === session?.user?.id
-  );
-
-  return (
-    <Card>
-      <Card.Section className="relative">
-        <Image src={thumbnail} alt={title} className="w-full" />
-        <Group position="apart" mt={8}>
-          <Text fz="10px" transform="uppercase">
-            {group.name}
-          </Text>
-          <Group className="items-center gap-2">
-            <Group className="items-center gap-0">
-              <ActionIcon variant="subtle" onClick={() => handleLikeReview(id)}>
-                {hasUserLikedAlready ? (
-                  <IoHeart size={16} color="red" />
-                ) : (
-                  <IoHeartOutline size={16} color="dimmed" />
-                )}
-              </ActionIcon>
-              {like.length && (
-                <Text size="xs" color="dimmed" mr={4}>
-                  {like.length}
-                </Text>
-              )}
-            </Group>
-            <Group className="items-center gap-0">
-              <IoStarOutline size={16} color="gray" />
-              <Text size="xs" color="dimmed">
-                {averageRating ? averageRating : ""}
-              </Text>
-            </Group>
-          </Group>
-        </Group>
-        <Text fz="20px" weight={500} lineClamp={2} mb={4} lh="130%">
-          {title}
-        </Text>
-        <Text size="sm" color="gray.7" lineClamp={3} lh="130%">
-          {
-            (content as any).content.find(
-              (node: any) => node.type === "paragraph"
-            ).content[0].text
-          }
-        </Text>
-        <Group mt="md" mb="xs" spacing="xs">
-          <Text size="xs" color="dimmed">
-            {createdAt.toLocaleDateString("en-US", {
-              year: "numeric",
-              month: "long",
-              day: "numeric",
-            })}
-          </Text>
-          <Text size="xs">by {author.name}</Text>
-        </Group>
-        <PiecePreview {...reviewedPiece} />
-      </Card.Section>
-    </Card>
-  );
-};
-
-const PiecePreview = ({ image, label, authors }: ReviewedPiece) => {
-  return (
-    <Flex className="mt-2 items-center gap-4 rounded-lg p-3" bg="orange.0">
-      <Image src={image} alt={label} width={24} />
-      <Box>
-        <Text fz="14px" lineClamp={1}>
-          {label}
-        </Text>
-        <Text fz="10px" color="dimmed" lineClamp={1}>
-          {authors}
-        </Text>
-      </Box>
-    </Flex>
-  );
-};
