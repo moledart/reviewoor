@@ -25,7 +25,7 @@ const Account = () => {
   const [lang, setLang] = useAtom(langSwitcherAtom);
   const { colorScheme, toggleColorScheme } = useMantineColorScheme();
   const [opened, setOpened] = useState(false);
-  // const ref = useClickOutside(() => setOpened(false));
+  const ref = useClickOutside<HTMLDivElement>(() => setOpened(false));
 
   return (
     <Menu shadow="md" width={200} position="bottom-end" opened={opened}>
@@ -41,52 +41,54 @@ const Account = () => {
         </UnstyledButton>
       </Menu.Target>
       <Menu.Dropdown>
-        <Menu.Label>{content.menu[lang]}</Menu.Label>
-        <Link href="/profile" className="no-underline">
-          <Menu.Item icon={<IoPersonOutline size={14} />}>
-            {content.profile[lang]}
-          </Menu.Item>
-        </Link>
-        <Menu.Item
-          icon={<IoLanguageOutline size={14} />}
-          rightSection={
-            <Text color="dimmed" className="flex items-center">
-              {lang}
-            </Text>
-          }
-          onClick={() => setLang((prev) => (prev === "ru" ? "en" : "ru"))}
-        >
-          {content.language[lang]}
-        </Menu.Item>
-        <Menu.Item
-          rightSection={
-            <Text color="dimmed" className="flex items-center">
-              {colorScheme === "light" ? (
-                <IoSunnyOutline size={14} />
-              ) : (
-                <IoMoon size={14} />
-              )}
-            </Text>
-          }
-          onClick={() => toggleColorScheme()}
-        >
-          {content.theme[lang]}
-        </Menu.Item>
-
-        {session && (
-          <>
-            <Menu.Divider />
-
-            <Menu.Label>{session?.user?.name}</Menu.Label>
-            <Menu.Item
-              color="red"
-              icon={<IoLogOutOutline size={14} />}
-              onClick={() => signOut()}
-            >
-              {content.logout[lang]}
+        <div ref={ref}>
+          <Menu.Label>{content.menu[lang]}</Menu.Label>
+          <Link href="/profile" className="no-underline">
+            <Menu.Item icon={<IoPersonOutline size={14} />}>
+              {content.profile[lang]}
             </Menu.Item>
-          </>
-        )}
+          </Link>
+          <Menu.Item
+            icon={<IoLanguageOutline size={14} />}
+            rightSection={
+              <Text color="dimmed" className="flex items-center">
+                {lang}
+              </Text>
+            }
+            onClick={() => setLang((prev) => (prev === "ru" ? "en" : "ru"))}
+          >
+            {content.language[lang]}
+          </Menu.Item>
+          <Menu.Item
+            rightSection={
+              <Text color="dimmed" className="flex items-center">
+                {colorScheme === "light" ? (
+                  <IoSunnyOutline size={14} />
+                ) : (
+                  <IoMoon size={14} />
+                )}
+              </Text>
+            }
+            onClick={() => toggleColorScheme()}
+          >
+            {content.theme[lang]}
+          </Menu.Item>
+
+          {session && (
+            <>
+              <Menu.Divider />
+
+              <Menu.Label>{session?.user?.name}</Menu.Label>
+              <Menu.Item
+                color="red"
+                icon={<IoLogOutOutline size={14} />}
+                onClick={() => signOut()}
+              >
+                {content.logout[lang]}
+              </Menu.Item>
+            </>
+          )}
+        </div>
       </Menu.Dropdown>
     </Menu>
   );
