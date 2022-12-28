@@ -1,7 +1,15 @@
 import { useRouter } from "next/router";
 import Navigation from "../../../components/Navigation";
 import { trpc } from "../../../utils/trpc";
-import { Container, Flex, Group, Rating, Stack, Text } from "@mantine/core";
+import {
+  Box,
+  Container,
+  Flex,
+  Group,
+  Rating,
+  Stack,
+  Text,
+} from "@mantine/core";
 import { ReviewAuthorAndDate } from "../../../components/CardContent";
 import Like from "../../../components/Like";
 import UserRating from "../../../components/UserRating";
@@ -14,11 +22,12 @@ import TextAlign from "@tiptap/extension-text-align";
 import Superscript from "@tiptap/extension-superscript";
 import SubScript from "@tiptap/extension-subscript";
 import { Link } from "@mantine/tiptap";
-
+import logo from "../../../../public/logo.png";
 import TagsCloud from "../../../components/TagsCloud";
 import { useSession } from "next-auth/react";
 import ReviewRating from "../../../components/ReviewRating";
 import { PiecePreview } from "../../../components/PiecePreview";
+import Image from "next/image";
 
 const ReviewReader = () => {
   const { data: session } = useSession();
@@ -59,7 +68,14 @@ const ReviewReader = () => {
         {review && (
           <Stack spacing={24}>
             <Stack spacing={8}>
-              <img src={review?.thumbnail} className="max-h-96 object-cover" />
+              <Flex className="relative h-60 md:h-96">
+                <Image
+                  src={review?.thumbnail || logo}
+                  alt={review.title}
+                  fill={true}
+                  className="object-cover"
+                />
+              </Flex>
 
               <Group position="apart">
                 <ReviewAuthorAndDate
