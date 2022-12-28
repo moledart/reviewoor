@@ -2,14 +2,7 @@ import { type NextPage } from "next";
 import Head from "next/head";
 import { trpc } from "../utils/trpc";
 import Navigation from "../components/Navigation";
-import {
-  Container,
-  Title,
-  Stack,
-  Badge,
-  Group,
-  useMantineTheme,
-} from "@mantine/core";
+import { Container, Title, Stack, Group } from "@mantine/core";
 import { Carousel } from "@mantine/carousel";
 import {
   Group as TGroup,
@@ -18,14 +11,15 @@ import {
   Like,
   UserRating,
   User,
-  Tag,
+  Tag as TagType,
 } from "@prisma/client";
 import { TopReviewCard } from "../components/TopReviewCard";
-import { useRouter } from "next/router";
 import homePage from "../lang/homepage";
 import { useAtom } from "jotai";
 import { langSwitcherAtom } from "../atoms/lang";
 import { ReviewCard } from "../components/ReviewCard";
+import Tag from "../components/Tag";
+import TagsCloud from "../components/TagsCloud";
 
 export type ReviewCardProps = Review & {
   reviewedPiece: ReviewedPiece;
@@ -33,7 +27,7 @@ export type ReviewCardProps = Review & {
   like: Like[];
   userRating: UserRating[];
   author: User;
-  tags: Tag[];
+  tags: TagType[];
 };
 
 const Home: NextPage = () => {
@@ -42,35 +36,10 @@ const Home: NextPage = () => {
 
   // gotta change to most popular tags
   const { data: tags } = trpc.tags.getAll.useQuery();
-  const theme = useMantineTheme();
   const [lang] = useAtom(langSwitcherAtom);
-
-  const router = useRouter();
 
   return (
     <>
-      <Head>
-        <title>Reviewoor</title>
-        <meta name="description" content="All reviews in one place" />
-        <link
-          rel="apple-touch-icon"
-          sizes="180x180"
-          href="favicon/apple-touch-icon.png"
-        />
-        <link
-          rel="icon"
-          type="image/png"
-          sizes="32x32"
-          href="favicon/favicon-32x32.png"
-        />
-        <link
-          rel="icon"
-          type="image/png"
-          sizes="16x16"
-          href="favicon/favicon-16x16.png"
-        />
-        <link rel="manifest" href="favicon/site.webmanifest" />
-      </Head>
       <Navigation />
       <Container className="pb-12">
         <Stack spacing={40}>
@@ -95,22 +64,7 @@ const Home: NextPage = () => {
           </Stack>
           <Stack spacing="lg">
             <Title order={1}>{homePage.tagsTitle[lang]}</Title>
-            <Group spacing="xs">
-              {tags?.map((tag) => (
-                <Badge
-                  key={tag.id}
-                  className={`cursor-pointer lowercase ${
-                    theme.colorScheme === "light"
-                      ? "hover:text-zinc-900"
-                      : "hover:text-pink-600"
-                  } `}
-                  color="gray"
-                  onClick={() => router.push(`/reviews/${tag.name}`)}
-                >
-                  #{tag.name}
-                </Badge>
-              ))}
-            </Group>
+            {tags && <TagsCloud tags={tags} />}
           </Stack>
           <Stack spacing="lg">
             <Title order={1}>{homePage.allReviewsTitle[lang]}</Title>

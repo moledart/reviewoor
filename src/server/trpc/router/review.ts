@@ -43,6 +43,50 @@ export const reviewRouter = router({
         },
       });
     }),
+  getFullContentById: publicProcedure
+    .input(z.object({ id: z.string() }))
+    .query(({ ctx, input }) => {
+      return ctx.prisma.review.findUnique({
+        where: {
+          id: input.id,
+        },
+        include: {
+          author: true,
+          comments: true,
+          group: true,
+          tags: true,
+          userRating: true,
+        },
+      });
+    }),
+  getByTag: publicProcedure
+    .input(z.object({ tagId: z.string() }))
+    .query(({ ctx, input }) => {
+      return ctx.prisma.review.findMany({
+        where: {
+          tags: {
+            some: {
+              id: input.tagId,
+            },
+          },
+        },
+        select: {
+          id: true,
+        },
+      });
+    }),
+  getByAuthor: publicProcedure
+    .input(z.object({ authorId: z.string() }))
+    .query(({ ctx, input }) => {
+      return ctx.prisma.review.findMany({
+        where: {
+          authorId: input.authorId,
+        },
+        select: {
+          id: true,
+        },
+      });
+    }),
   create: protectedProcedure
     .input(schema.postSchema)
     .mutation(async ({ input, ctx }) => {

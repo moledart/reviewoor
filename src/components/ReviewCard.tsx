@@ -1,5 +1,12 @@
 import { trpc } from "../utils/trpc";
-import { Flex, Box, useMantineTheme, Stack, Space } from "@mantine/core";
+import {
+  Flex,
+  Box,
+  useMantineTheme,
+  Stack,
+  Space,
+  Skeleton,
+} from "@mantine/core";
 
 import { PiecePreview } from "./PiecePreview";
 import { CardContent } from "./CardContent";
@@ -15,14 +22,16 @@ export const ReviewCard = ({ reviewId }: { reviewId: string }) => {
       }`}
     >
       <Box className="basis-1/3">
-        {review?.thumbnail && (
+        {review?.thumbnail ? (
           <img
             src={review?.thumbnail}
-            className="h-36 w-full object-cover md:h-56"
+            className="h-40 w-full object-cover md:h-56"
           />
+        ) : (
+          <Skeleton className="h-36 w-full" />
         )}
       </Box>
-      <Stack className="basis-2/3 flex-col items-start gap-0 px-4">
+      <Stack className="basis-2/3 flex-col items-start gap-0 md:px-4">
         <CardContent reviewId={reviewId} />
         <Space h="xl" />
         <PiecePreview reviewId={reviewId} />

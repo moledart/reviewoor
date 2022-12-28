@@ -10,6 +10,7 @@ import {
 } from "@mantine/core";
 import { IoStar } from "react-icons/io5";
 import { trpc } from "../utils/trpc";
+import PieceSkeleton from "./PieceSkeleton";
 
 export const PiecePreview = ({ reviewId }: { reviewId: string }) => {
   const theme = useMantineTheme();
@@ -20,7 +21,7 @@ export const PiecePreview = ({ reviewId }: { reviewId: string }) => {
     isLoading,
   } = trpc.review.getById.useQuery({ id: reviewId });
 
-  if (isLoading) return <Loader color="gray" size="sm" />;
+  if (isLoading) return <PieceSkeleton />;
   if (isError)
     return (
       <Text color="gray" size="sm">

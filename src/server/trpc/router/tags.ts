@@ -13,6 +13,10 @@ export const tagsRouter = router({
     return result;
   }),
   getAll: publicProcedure.query(({ ctx }) => {
-    return ctx.prisma.tag.findMany();
+    return ctx.prisma.tag.findMany({
+      orderBy: {
+        name: "asc",
+      },
+    });
   }),
 });

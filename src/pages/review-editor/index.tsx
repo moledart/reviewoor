@@ -12,7 +12,7 @@ import { useCreateReview } from "../../hooks/useCreateReview";
 
 const ReviewEditor = () => {
   const { data: session } = useSession();
-  const { isLoading, isError } = useCreateReview();
+  const { isLoading } = useCreateReview();
 
   if (!session)
     return (

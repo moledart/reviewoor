@@ -1,20 +1,14 @@
-import {
-  Group,
-  Text,
-  ActionIcon,
-  Loader,
-  useMantineTheme,
-  Flex,
-} from "@mantine/core";
-import { IoHeart, IoHeartOutline, IoStarOutline } from "react-icons/io5";
+import { Group, Text, useMantineTheme, Flex, Box } from "@mantine/core";
+import { IoStarOutline } from "react-icons/io5";
 import Link from "next/link";
 import { trpc } from "../utils/trpc";
-import { useLike } from "../hooks/useLike";
-import { useSession } from "next-auth/react";
+import ReviewSkeleton from "./ReviewSkeleton";
+import { User } from "@prisma/client";
+import TagsCloud from "./TagsCloud";
+import Like from "./Like";
+import UserRating from "./UserRating";
 
 export const CardContent = ({ reviewId }: { reviewId: string }) => {
-  const { data: session } = useSession();
-
   const {
     data: review,
     isError,
@@ -23,11 +17,7 @@ export const CardContent = ({ reviewId }: { reviewId: string }) => {
 
   const theme = useMantineTheme();
 
-  const { data: likes } = trpc.like.getLikes.useQuery({ reviewId });
-
-  const { handleLikeReview } = useLike();
-
-  if (isLoading) return <Loader color="gray" size="sm" />;
+  if (isLoading) return <ReviewSkeleton />;
   if (isError)
     return (
       <Text color="gray" size="sm">
@@ -35,15 +25,7 @@ export const CardContent = ({ reviewId }: { reviewId: string }) => {
       </Text>
     );
 
-  const { title, author, group, userRating, createdAt } = review!;
-
-  const averageRating =
-    userRating.reduce((total, current) => total + current.rating, 0) /
-    userRating.length;
-
-  const hasUserLikedAlready = likes?.find(
-    (like) => like.userId === session?.user?.id
-  );
+  const { title, author, group, userRating, createdAt, tags } = review!;
 
   return (
     <>
@@ -52,33 +34,12 @@ export const CardContent = ({ reviewId }: { reviewId: string }) => {
           {group.name}
         </Text>
         <Flex className="items-center gap-2">
-          <Group className="items-center gap-0">
-            <ActionIcon
-              variant="transparent"
-              onClick={() => handleLikeReview(reviewId)}
-            >
-              {hasUserLikedAlready ? (
-                <IoHeart size={16} className="text-pink-700" />
-              ) : (
-                <IoHeartOutline size={16} className="text-pink-700" />
-              )}
-            </ActionIcon>
-            {likes?.length && (
-              <Text size="xs" color="dimmed" mr={4}>
-                {likes?.length}
-              </Text>
-            )}
-          </Group>
-          <Group className="items-center gap-0">
-            <IoStarOutline size={16} color="gray" />
-            <Text size="xs" color="dimmed">
-              {averageRating ? averageRating : ""}
-            </Text>
-          </Group>
+          <Like reviewId={reviewId} />
+          <UserRating userRating={userRating} />
         </Flex>
       </Group>
       <Link
-        href={`/review/${title}`}
+        href={`/review/${reviewId}`}
         className="no-underline decoration-zinc-500 underline-offset-4 hover:underline"
       >
         <Text
@@ -94,26 +55,54 @@ export const CardContent = ({ reviewId }: { reviewId: string }) => {
           {title}
         </Text>
       </Link>
-      <Group spacing="xs">
-        <Text size="xs" color="dimmed">
-          {createdAt.toLocaleDateString("en-US", {
-            year: "numeric",
-            month: "long",
-            day: "numeric",
-          })}
-        </Text>
-        <Text size="xs">
-          by{" "}
-          <Link
-            href={`/reviews/${author.name}`}
-            className={`no-underline decoration-zinc-500 underline-offset-4 hover:underline ${
-              theme.colorScheme === "light" ? "text-zinc-900" : "text-zinc-200"
-            }`}
-          >
-            {author.name}
-          </Link>
-        </Text>
-      </Group>
+      <Text
+        fz="14px"
+        lineClamp={3}
+        mb={4}
+        lh="135%"
+        className={
+          theme.colorScheme === "light" ? "text-zinc-600" : "text-zinc-200"
+        }
+      >
+        {title}
+      </Text>
+      <ReviewAuthorAndDate author={author} createdAt={createdAt} />
+      <Box mt={4}>
+        <TagsCloud tags={tags} />
+      </Box>
     </>
+  );
+};
+
+export const ReviewAuthorAndDate = ({
+  author,
+  createdAt,
+}: {
+  author: User;
+  createdAt: Date;
+}) => {
+  const theme = useMantineTheme();
+
+  return (
+    <Group spacing="xs">
+      <Text size="xs" color="dimmed">
+        {createdAt.toLocaleDateString("en-US", {
+          year: "numeric",
+          month: "long",
+          day: "numeric",
+        })}
+      </Text>
+      <Text size="xs">
+        by{" "}
+        <Link
+          href={`/reviews/author?name=${author.name}&id=${author.id}`}
+          className={`no-underline decoration-zinc-500 underline-offset-4 hover:underline ${
+            theme.colorScheme === "light" ? "text-zinc-900" : "text-zinc-200"
+          }`}
+        >
+          {author.name}
+        </Link>
+      </Text>
+    </Group>
   );
 };
