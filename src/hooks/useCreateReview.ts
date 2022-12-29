@@ -27,8 +27,15 @@ export const useCreateReview = () => {
   });
 
   const handleCreateReview = async () => {
-    const { authorRating, content, group, reviewedPiece, tags, title } =
-      formData;
+    const {
+      authorRating,
+      content,
+      group,
+      reviewedPiece,
+      tags,
+      title,
+      subtitle,
+    } = formData;
     let { thumbnail } = formData;
 
     if (thumbnailBlob[0]) {
@@ -38,6 +45,7 @@ export const useCreateReview = () => {
     if (reviewedPiece) {
       createReview({
         authorRating,
+        subtitle,
         group,
         reviewedPiece,
         title,

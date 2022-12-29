@@ -1,33 +1,18 @@
 import { useRouter } from "next/router";
 import Navigation from "../../../components/Navigation";
 import { trpc } from "../../../utils/trpc";
-import {
-  Box,
-  Container,
-  Flex,
-  Group,
-  Rating,
-  Stack,
-  Text,
-} from "@mantine/core";
+import { Container, Flex, Group, Stack, Text, Title } from "@mantine/core";
 import { ReviewAuthorAndDate } from "../../../components/CardContent";
 import Like from "../../../components/Like";
 import UserRating from "../../../components/UserRating";
-import { EditorContent, JSONContent, useEditor } from "@tiptap/react";
-import StarterKit from "@tiptap/starter-kit";
-import { useEffect } from "react";
-import Highlight from "@tiptap/extension-highlight";
-import Underline from "@tiptap/extension-underline";
-import TextAlign from "@tiptap/extension-text-align";
-import Superscript from "@tiptap/extension-superscript";
-import SubScript from "@tiptap/extension-subscript";
-import { Link } from "@mantine/tiptap";
+
 import logo from "../../../../public/logo.png";
 import TagsCloud from "../../../components/TagsCloud";
 import { useSession } from "next-auth/react";
 import ReviewRating from "../../../components/ReviewRating";
 import { PiecePreview } from "../../../components/PiecePreview";
 import Image from "next/image";
+import ReviewContent from "../../../components/ReviewContent";
 
 const ReviewReader = () => {
   const { data: session } = useSession();
@@ -36,47 +21,22 @@ const ReviewReader = () => {
     id: router.query.id as string,
   });
 
-  const editor = useEditor({
-    editable: false,
-    content: (review?.content as JSONContent) || "",
-    extensions: [
-      StarterKit,
-      Underline,
-      Link,
-      Superscript,
-      SubScript,
-      Highlight,
-    ],
-    editorProps: {
-      attributes: {
-        class:
-          "prose prose-sm sm:prose lg:prose-lg xl:prose-2xl focus:outline-none",
-      },
-    },
-  });
-
-  useEffect(() => {
-    if (review && editor) {
-      editor.commands.setContent(review.content as JSONContent);
-    }
-  }, [review]);
-
   return (
     <>
       <Navigation />
       <Container className="max-w-[80ch] pb-12">
         {review && (
           <Stack spacing={24}>
+            <Flex className="relative h-60 md:h-96">
+              <Image
+                src={review?.thumbnail || logo}
+                alt={review.title}
+                fill={true}
+                className="object-cover"
+              />
+            </Flex>
             <Stack spacing={8}>
-              <Flex className="relative h-60 md:h-96">
-                <Image
-                  src={review?.thumbnail || logo}
-                  alt={review.title}
-                  fill={true}
-                  className="object-cover"
-                />
-              </Flex>
-
+              <Title>{review.title}</Title>
               <Group position="apart">
                 <ReviewAuthorAndDate
                   author={review?.author}
@@ -87,10 +47,10 @@ const ReviewReader = () => {
                   <UserRating userRating={review.userRating} />
                 </Flex>
               </Group>
-              <PiecePreview reviewId={review.id} />
-
-              <EditorContent editor={editor} />
+              <Text>{review.subtitle}</Text>
             </Stack>
+            <PiecePreview reviewId={review.id} />
+            <ReviewContent content={review.content} />
             <TagsCloud tags={review.tags} />
             {session?.user && (
               <ReviewRating reviewId={review.id} userId={session.user.id} />

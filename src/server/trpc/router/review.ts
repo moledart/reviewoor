@@ -1,8 +1,6 @@
 import { z } from "zod";
 import schema from "../schemas";
-
 import { router, publicProcedure, protectedProcedure } from "../trpc";
-import { inputRegex } from "@tiptap/extension-highlight";
 
 export const reviewRouter = router({
   getAll: publicProcedure.query(({ ctx }) => {
@@ -38,6 +36,7 @@ export const reviewRouter = router({
           tags: true,
           authorRating: true,
           title: true,
+          subtitle: true,
           thumbnail: true,
           createdAt: true,
         },
@@ -92,6 +91,7 @@ export const reviewRouter = router({
     .mutation(async ({ input, ctx }) => {
       const {
         title,
+        subtitle,
         reviewedPiece,
         group,
         tags,
@@ -100,9 +100,10 @@ export const reviewRouter = router({
         thumbnail,
       } = input;
       const { value, label, authors, published, image } = reviewedPiece;
-      const result = await ctx.prisma.review.create({
+      return await ctx.prisma.review.create({
         data: {
           title,
+          subtitle,
           author: {
             connect: {
               id: ctx.session.user.id,
@@ -150,7 +151,5 @@ export const reviewRouter = router({
           thumbnail,
         },
       });
-
-      return result;
     }),
 });

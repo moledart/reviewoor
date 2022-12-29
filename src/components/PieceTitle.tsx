@@ -6,14 +6,7 @@ import {
   SelectItemProps,
   Text,
 } from "@mantine/core";
-import {
-  Dispatch,
-  forwardRef,
-  SetStateAction,
-  useEffect,
-  useRef,
-  useState,
-} from "react";
+import { forwardRef, useEffect, useRef, useState } from "react";
 import { debounce } from "lodash";
 import { searchBooksOnGoogle } from "../utils/utils";
 import { useAtom } from "jotai";
@@ -69,6 +62,7 @@ const PieceTitle = () => {
           fontSize: 14,
         },
       }}
+      withAsterisk
       clearable
     />
   );

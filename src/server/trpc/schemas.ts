@@ -10,6 +10,7 @@ const reviewPieceSchema = z.object({
 
 const postSchema = z.object({
   title: z.string(),
+  subtitle: z.string(),
   reviewedPiece: reviewPieceSchema,
   group: z.string(),
   tags: z.array(z.string()).optional(),

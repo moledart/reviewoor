@@ -4,6 +4,7 @@ import { focusAtom } from "jotai-optics";
 
 export type NewReviewFormData = {
   title: string;
+  subtitle: string;
   group: string;
   reviewedPiece: BookFromGoogle | null;
   content: JSONContent | null;
@@ -23,7 +24,8 @@ export type BookFromGoogle = {
 
 export const initialFormData = {
   title: "",
-  group: "",
+  subtitle: "",
+  group: "Books",
   reviewedPiece: {
     group: "",
     image: "",
@@ -41,6 +43,10 @@ export const initialFormData = {
 export const dataAtom = atom<NewReviewFormData>(initialFormData);
 
 export const titleAtom = focusAtom(dataAtom, (optic) => optic.prop("title"));
+export const subtitleAtom = focusAtom(dataAtom, (optic) =>
+  optic.prop("subtitle")
+);
+
 export const groupAtom = focusAtom(dataAtom, (optic) => optic.prop("group"));
 export const reviewedPieceAtom = focusAtom(dataAtom, (optic) =>
   optic.prop("reviewedPiece")
@@ -59,6 +65,7 @@ export const thumbnailAtom = focusAtom(dataAtom, (optic) =>
 export default {
   dataAtom,
   titleAtom,
+  subtitleAtom,
   groupAtom,
   reviewedPieceAtom,
   contentAtom,

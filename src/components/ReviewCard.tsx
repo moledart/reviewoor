@@ -10,6 +10,7 @@ import {
 
 import { PiecePreview } from "./PiecePreview";
 import { CardContent } from "./CardContent";
+import Image from "next/image";
 
 export const ReviewCard = ({ reviewId }: { reviewId: string }) => {
   const { data: review } = trpc.review.getById.useQuery({ id: reviewId });
@@ -21,11 +22,13 @@ export const ReviewCard = ({ reviewId }: { reviewId: string }) => {
         theme.colorScheme === "light" ? "bg-white" : "bg-[#1A1B1E]"
       }`}
     >
-      <Box className="basis-1/3">
+      <Box className="relative h-44 md:h-auto md:basis-1/3">
         {review?.thumbnail ? (
-          <img
+          <Image
             src={review?.thumbnail}
-            className="h-40 w-full object-cover md:h-56"
+            alt={review.title}
+            fill={true}
+            className="object-cover"
           />
         ) : (
           <Skeleton className="h-36 w-full" />
@@ -33,7 +36,7 @@ export const ReviewCard = ({ reviewId }: { reviewId: string }) => {
       </Box>
       <Stack className="basis-2/3 flex-col items-start gap-0 md:px-4">
         <CardContent reviewId={reviewId} />
-        <Space h="xl" />
+        <Space h="md" />
         <PiecePreview reviewId={reviewId} />
       </Stack>
     </Flex>

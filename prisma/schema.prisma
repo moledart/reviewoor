@@ -76,6 +76,7 @@ model Review {
   published       Boolean       @default(false)
   thumbnail       String?       @db.VarChar(1000)
   title           String
+  subtitle        String?       @db.VarChar(1000)
   author          User          @relation(fields: [authorId], references: [id])
   authorId        String
   reviewedPiece   ReviewedPiece @relation(fields: [reviewedPieceId], references: [id])

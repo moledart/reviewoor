@@ -9,6 +9,8 @@ import PieceTags from "../../components/PieceTags";
 import PieceThumbnail from "../../components/PieceThumbnail";
 import PieceTextEditor from "../../components/PieceTextEditor";
 import { useCreateReview } from "../../hooks/useCreateReview";
+import PieceReviewTitle from "../../components/PieceReviewTitle";
+import PieceReviewSubtitle from "../../components/PieceReviewSubtitle";
 
 const ReviewEditor = () => {
   const { data: session } = useSession();
@@ -31,6 +33,8 @@ const ReviewEditor = () => {
           <PieceRating />
           <PieceTags />
           <PieceThumbnail />
+          <PieceReviewTitle />
+          <PieceReviewSubtitle />
           <PieceTextEditor />
         </Stack>
       </Container>

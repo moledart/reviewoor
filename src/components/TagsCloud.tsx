@@ -4,7 +4,7 @@ import Tag from "./Tag";
 
 const TagsCloud = ({ tags }: { tags: TagType[] }) => {
   return (
-    <Group spacing={2}>
+    <Group spacing="xs">
       {tags
         ?.sort((a, z) => a.name.localeCompare(z.name))
         .map(({ id, name }) => (

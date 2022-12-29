@@ -6,56 +6,36 @@ import Underline from "@tiptap/extension-underline";
 import TextAlign from "@tiptap/extension-text-align";
 import Superscript from "@tiptap/extension-superscript";
 import SubScript from "@tiptap/extension-subscript";
-import Document from "@tiptap/extension-document";
 import Placeholder from "@tiptap/extension-placeholder";
 import { Stack, Text } from "@mantine/core";
 import { useAtom } from "jotai";
 import reviewForm from "../atoms/reviewFormData";
 
-const CustomDocument = Document.extend({
-  content: "heading block*",
-});
-
 const PieceTextEditor = () => {
   const [reviewContent, setReviewContent] = useAtom(reviewForm.contentAtom);
-  const [, setReviewTitle] = useAtom(reviewForm.titleAtom);
 
   const editor = useEditor({
     extensions: [
-      CustomDocument,
-      StarterKit.configure({
-        document: false,
-      }),
+      StarterKit,
       Underline,
       Link,
       Superscript,
       SubScript,
       Highlight,
       TextAlign.configure({ types: ["heading", "paragraph"] }),
-      Placeholder.configure({
-        placeholder: ({ node }) => {
-          if (node.type.name === "heading") {
-            return "Heading";
-          }
-
-          return "Paragraph";
-        },
-      }),
+      Placeholder.configure({ placeholder: "Start typing" }),
     ],
+
     content: reviewContent,
     onUpdate({ editor }) {
       const content = editor.getJSON();
-      const title = content.content
-        ?.find((element) => element.type === "heading")
-        ?.content?.at(0)?.text;
       setReviewContent(content);
-      setReviewTitle(title || "");
     },
   });
 
   return (
     <Stack spacing={8}>
-      <Text size="sm">Write your review here</Text>
+      <Text size="sm">Write your review here </Text>
 
       <RichTextEditor editor={editor}>
         <RichTextEditor.Toolbar sticky stickyOffset={60}>

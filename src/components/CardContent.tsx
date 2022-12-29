@@ -25,7 +25,8 @@ export const CardContent = ({ reviewId }: { reviewId: string }) => {
       </Text>
     );
 
-  const { title, author, group, userRating, createdAt, tags } = review!;
+  const { title, subtitle, author, group, userRating, createdAt, tags } =
+    review!;
 
   return (
     <>
@@ -55,19 +56,21 @@ export const CardContent = ({ reviewId }: { reviewId: string }) => {
           {title}
         </Text>
       </Link>
+      <ReviewAuthorAndDate author={author} createdAt={createdAt} />
+
       <Text
         fz="14px"
         lineClamp={3}
-        mb={4}
+        mt={8}
+        mb={8}
         lh="135%"
         className={
           theme.colorScheme === "light" ? "text-zinc-600" : "text-zinc-200"
         }
       >
-        {title}
+        {subtitle}
       </Text>
-      <ReviewAuthorAndDate author={author} createdAt={createdAt} />
-      <Box mt={4}>
+      <Box mt={8}>
         <TagsCloud tags={tags} />
       </Box>
     </>
