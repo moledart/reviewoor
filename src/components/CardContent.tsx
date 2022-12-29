@@ -1,5 +1,4 @@
-import { Group, Text, useMantineTheme, Flex, Box } from "@mantine/core";
-import { IoStarOutline } from "react-icons/io5";
+import { Group, Text, useMantineTheme, Box, Stack } from "@mantine/core";
 import Link from "next/link";
 import { trpc } from "../utils/trpc";
 import ReviewSkeleton from "./ReviewSkeleton";
@@ -29,40 +28,38 @@ export const CardContent = ({ reviewId }: { reviewId: string }) => {
     review!;
 
   return (
-    <>
-      <Group position="apart" className="w-full">
-        <Text fz="10px" transform="uppercase">
-          {group.name}
-        </Text>
-        <Flex className="items-center gap-2">
+    <Stack spacing={12} className="relative">
+      <Stack spacing={4}>
+        <Group position="apart">
+          <Text fz="10px" transform="uppercase">
+            {group.name}
+          </Text>
           <Like reviewId={reviewId} />
-          <UserRating userRating={userRating} />
-        </Flex>
-      </Group>
-      <Link
-        href={`/review/${reviewId}`}
-        className="no-underline decoration-zinc-500 underline-offset-4 hover:underline"
-      >
-        <Text
-          fz="20px"
-          weight={600}
-          lineClamp={2}
-          mb={4}
-          lh="135%"
-          className={
-            theme.colorScheme === "light" ? "text-zinc-900" : "text-zinc-200"
-          }
+        </Group>
+        <Link
+          href={`/review/${reviewId}`}
+          className="no-underline decoration-zinc-500 underline-offset-4 hover:underline"
         >
-          {title}
-        </Text>
-      </Link>
-      <ReviewAuthorAndDate author={author} createdAt={createdAt} />
+          <Text
+            fz="20px"
+            weight={600}
+            lineClamp={2}
+            lh="125%"
+            className={
+              theme.colorScheme === "light" ? "text-zinc-900" : "text-zinc-200"
+            }
+          >
+            {title}
+          </Text>
+        </Link>
+
+        <ReviewAuthorAndDate author={author} createdAt={createdAt} />
+      </Stack>
+      {userRating.length > 0 && <UserRating userRating={userRating} />}
 
       <Text
         fz="14px"
         lineClamp={3}
-        mt={8}
-        mb={8}
         lh="135%"
         className={
           theme.colorScheme === "light" ? "text-zinc-600" : "text-zinc-200"
@@ -70,10 +67,8 @@ export const CardContent = ({ reviewId }: { reviewId: string }) => {
       >
         {subtitle}
       </Text>
-      <Box mt={8}>
-        <TagsCloud tags={tags} />
-      </Box>
-    </>
+      <TagsCloud tags={tags} />
+    </Stack>
   );
 };
 

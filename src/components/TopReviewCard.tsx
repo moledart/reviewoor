@@ -1,6 +1,12 @@
-import { useSession } from "next-auth/react";
 import { trpc } from "../utils/trpc";
-import { Card, Image, useMantineTheme, Space, Skeleton } from "@mantine/core";
+import {
+  Card,
+  Image,
+  useMantineTheme,
+  Space,
+  Skeleton,
+  Box,
+} from "@mantine/core";
 
 import { PiecePreview } from "./PiecePreview";
 import { CardContent } from "./CardContent";
@@ -18,7 +24,7 @@ export const TopReviewCard = ({ reviewId }: { reviewId: string }) => {
           <Image
             src={review?.thumbnail}
             alt={review?.title}
-            className="w-full"
+            className="relative mb-2 w-full"
           />
         ) : (
           <Skeleton className="h-36 w-full" />

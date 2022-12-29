@@ -1,5 +1,4 @@
-import { ActionIcon, Group, Text } from "@mantine/core";
-import React from "react";
+import { Group, Text } from "@mantine/core";
 import { useLike } from "../hooks/useLike";
 import { trpc } from "../utils/trpc";
 import { useSession } from "next-auth/react";
@@ -17,20 +16,23 @@ const Like = ({ reviewId }: { reviewId: string }) => {
   );
   return (
     <Group className="items-center gap-0">
-      <ActionIcon
-        variant="transparent"
-        onClick={() => handleLikeReview(reviewId)}
-      >
-        {hasUserLikedAlready ? (
-          <IoHeart size={16} className="text-pink-700" />
-        ) : (
-          <IoHeartOutline size={16} className="text-pink-700" />
-        )}
-      </ActionIcon>
       {likes?.length && (
         <Text size="xs" color="dimmed" mr={4}>
           {likes?.length}
         </Text>
+      )}
+      {hasUserLikedAlready ? (
+        <IoHeart
+          size={18}
+          className="cursor-pointer text-pink-700"
+          onClick={() => handleLikeReview(reviewId)}
+        />
+      ) : (
+        <IoHeartOutline
+          size={18}
+          className="cursor-pointer text-pink-700"
+          onClick={() => handleLikeReview(reviewId)}
+        />
       )}
     </Group>
   );
