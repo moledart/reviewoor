@@ -77,7 +77,7 @@ const Home: NextPage = () => {
                 {Array(20)
                   .fill(1)
                   .map((val, i) => (
-                    <Skeleton height={20} mb={6} width={60} />
+                    <Skeleton height={20} mb={6} width={60} key={i} />
                   ))}
               </Group>
             ) : (
