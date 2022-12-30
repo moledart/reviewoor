@@ -7,13 +7,15 @@ import {
   Space,
   Skeleton,
 } from "@mantine/core";
-
+import logo from "../../public/logo.png";
 import { PiecePreview } from "./PiecePreview";
 import { CardContent } from "./CardContent";
 import Image from "next/image";
 
 export const ReviewCard = ({ reviewId }: { reviewId: string }) => {
-  const { data: review } = trpc.review.getById.useQuery({ id: reviewId });
+  const { data: review, isLoading } = trpc.review.getById.useQuery({
+    id: reviewId,
+  });
   const theme = useMantineTheme();
 
   return (
@@ -22,16 +24,16 @@ export const ReviewCard = ({ reviewId }: { reviewId: string }) => {
         theme.colorScheme === "light" ? "bg-white" : "bg-[#1A1B1E]"
       }`}
     >
-      <Box className="relative h-44 md:h-auto md:basis-1/3">
-        {review?.thumbnail ? (
+      <Box className="relative mb-2 h-44 md:mb-0 md:h-auto md:basis-1/3">
+        {isLoading ? (
+          <Skeleton className="h-36 w-full" />
+        ) : (
           <Image
-            src={review?.thumbnail}
-            alt={review.title}
+            src={review?.thumbnail || logo}
+            alt={review?.title as string}
             fill={true}
             className="object-cover"
           />
-        ) : (
-          <Skeleton className="h-36 w-full" />
         )}
       </Box>
       <Stack className="basis-2/3 flex-col items-start gap-0 md:px-4">

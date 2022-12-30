@@ -37,16 +37,6 @@ const Navigation = () => {
         <>
           {router.pathname === "/review-editor" ? (
             <>
-              {/* <Button
-                leftIcon={<HiOutlinePencilSquare size={14} />}
-                size="md"
-                className="bg-zinc-800"
-                color="dark"
-                fw="400"
-                onClick={() => router.push("/review-editor")}
-              >
-                {lang === "ru" ? "Сохранить драфт" : "Save draft"}
-              </Button> */}
               <Button
                 leftIcon={<HiOutlinePencilSquare size={14} />}
                 size="md"
@@ -75,7 +65,9 @@ const Navigation = () => {
           <Account />
         </>
       ) : (
-        <LoginButton />
+        <>
+          <Account />
+        </>
       )}
     </Box>
   );

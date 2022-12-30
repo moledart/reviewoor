@@ -74,6 +74,18 @@ export const reviewRouter = router({
         },
       });
     }),
+  getByPiece: publicProcedure
+    .input(z.object({ pieceId: z.string() }))
+    .query(({ ctx, input }) => {
+      return ctx.prisma.review.findMany({
+        where: {
+          reviewedPieceId: input.pieceId,
+        },
+        select: {
+          id: true,
+        },
+      });
+    }),
   getByAuthor: publicProcedure
     .input(z.object({ authorId: z.string() }))
     .query(({ ctx, input }) => {

@@ -27,7 +27,7 @@ export const TopReviewCard = ({ reviewId }: { reviewId: string }) => {
             className="relative mb-2 w-full"
           />
         ) : (
-          <Skeleton className="h-36 w-full" />
+          <Skeleton className="mb-4 h-36 w-full" />
         )}
         <CardContent reviewId={reviewId} />
         <Space h="xl" />

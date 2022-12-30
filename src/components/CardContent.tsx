@@ -12,7 +12,9 @@ export const CardContent = ({ reviewId }: { reviewId: string }) => {
     data: review,
     isError,
     isLoading,
-  } = trpc.review.getById.useQuery({ id: reviewId });
+  } = trpc.review.getById.useQuery({
+    id: reviewId,
+  });
 
   const theme = useMantineTheme();
 
@@ -44,7 +46,7 @@ export const CardContent = ({ reviewId }: { reviewId: string }) => {
             fz="20px"
             weight={600}
             lineClamp={2}
-            lh="125%"
+            lh="140%"
             className={
               theme.colorScheme === "light" ? "text-zinc-900" : "text-zinc-200"
             }
@@ -52,11 +54,9 @@ export const CardContent = ({ reviewId }: { reviewId: string }) => {
             {title}
           </Text>
         </Link>
-
         <ReviewAuthorAndDate author={author} createdAt={createdAt} />
       </Stack>
       {userRating.length > 0 && <UserRating userRating={userRating} />}
-
       <Text
         fz="14px"
         lineClamp={3}

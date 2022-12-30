@@ -11,6 +11,9 @@ const useData = (id: string, slug: string) => {
   if (slug === "tag") {
     return trpc.review.getByTag.useQuery({ tagId: id });
   }
+  if (slug === "piece") {
+    return trpc.review.getByPiece.useQuery({ pieceId: id });
+  }
   return trpc.review.getAll.useQuery();
 };
 
