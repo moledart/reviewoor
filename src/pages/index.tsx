@@ -1,8 +1,7 @@
 import { type NextPage } from "next";
-import Head from "next/head";
 import { trpc } from "../utils/trpc";
 import Navigation from "../components/Navigation";
-import { Container, Title, Stack, Group } from "@mantine/core";
+import { Container, Title, Stack, Group, Skeleton } from "@mantine/core";
 import { Carousel } from "@mantine/carousel";
 import {
   Group as TGroup,
@@ -18,8 +17,8 @@ import homePage from "../lang/homepage";
 import { useAtom } from "jotai";
 import { langSwitcherAtom } from "../atoms/lang";
 import { ReviewCard } from "../components/ReviewCard";
-import Tag from "../components/Tag";
 import TagsCloud from "../components/TagsCloud";
+import ReviewSkeleton from "../components/ReviewSkeleton";
 
 export type ReviewCardProps = Review & {
   reviewedPiece: ReviewedPiece;
@@ -31,11 +30,12 @@ export type ReviewCardProps = Review & {
 };
 
 const Home: NextPage = () => {
-  const { data: topReviewIds } = trpc.review.getTop.useQuery();
-  const { data: reviewIds } = trpc.review.getAll.useQuery();
-
+  const { data: topReviewIds, isLoading: topLoading } =
+    trpc.review.getTop.useQuery();
+  const { data: reviewIds, isLoading: allLoading } =
+    trpc.review.getAll.useQuery();
   // gotta change to most popular tags
-  const { data: tags } = trpc.tags.getAll.useQuery();
+  const { data: tags, isLoading: tagsLoading } = trpc.tags.getAll.useQuery();
   const [lang] = useAtom(langSwitcherAtom);
 
   return (
@@ -55,23 +55,45 @@ const Home: NextPage = () => {
               ]}
               align="start"
             >
-              {topReviewIds?.map(({ id }) => (
-                <Carousel.Slide key={id}>
-                  <TopReviewCard reviewId={id} />
-                </Carousel.Slide>
-              ))}
+              {topLoading
+                ? Array(4)
+                    .fill(1)
+                    .map((val, i) => (
+                      <Carousel.Slide key={i}>
+                        <ReviewSkeleton direction="col" />
+                      </Carousel.Slide>
+                    ))
+                : topReviewIds?.map(({ id }) => (
+                    <Carousel.Slide key={id}>
+                      <TopReviewCard reviewId={id} />
+                    </Carousel.Slide>
+                  ))}
             </Carousel>
           </Stack>
           <Stack spacing="lg">
             <Title order={1}>{homePage.tagsTitle[lang]}</Title>
-            {tags && <TagsCloud tags={tags} />}
+            {tagsLoading ? (
+              <Group spacing="xs">
+                {Array(20)
+                  .fill(1)
+                  .map((val, i) => (
+                    <Skeleton height={20} mb={6} width={60} />
+                  ))}
+              </Group>
+            ) : (
+              <TagsCloud tags={tags!} />
+            )}
           </Stack>
           <Stack spacing="lg">
             <Title order={1}>{homePage.allReviewsTitle[lang]}</Title>
             <Stack spacing={32}>
-              {reviewIds?.map(({ id }) => (
-                <ReviewCard reviewId={id} key={id} />
-              ))}
+              {allLoading
+                ? Array(4)
+                    .fill(1)
+                    .map((val, i) => <ReviewSkeleton key={i} />)
+                : reviewIds?.map(({ id }) => (
+                    <ReviewCard reviewId={id} key={id} />
+                  ))}
             </Stack>
           </Stack>
         </Stack>
