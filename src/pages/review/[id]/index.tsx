@@ -49,7 +49,10 @@ const ReviewReader = () => {
               </Group>
               <Text>{review.subtitle}</Text>
             </Stack>
-            <PiecePreview reviewId={review.id} />
+            <PiecePreview
+              reviewedPiece={review.reviewedPiece}
+              authorRating={review.authorRating}
+            />
             <ReviewContent content={review.content} />
             <TagsCloud tags={review.tags} />
             {session?.user && (
