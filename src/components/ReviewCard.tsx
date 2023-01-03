@@ -1,25 +1,12 @@
-import { trpc } from "../utils/trpc";
-import {
-  Flex,
-  Box,
-  useMantineTheme,
-  Stack,
-  Space,
-  Skeleton,
-} from "@mantine/core";
+import { Flex, Box, useMantineTheme, Stack, Space } from "@mantine/core";
 import logo from "../../public/logo.png";
 import { PiecePreview } from "./PiecePreview";
 import { CardContent } from "./CardContent";
 import Image from "next/image";
-import ReviewSkeleton from "./ReviewSkeleton";
+import { ReviewCardProps } from "../pages";
 
-export const ReviewCard = ({ reviewId }: { reviewId: string }) => {
-  const { data: review, isLoading } = trpc.review.getById.useQuery({
-    id: reviewId,
-  });
+export const ReviewCard = ({ review }: { review: ReviewCardProps }) => {
   const theme = useMantineTheme();
-
-  if (isLoading) return <ReviewSkeleton />;
 
   return (
     <Flex
@@ -36,9 +23,12 @@ export const ReviewCard = ({ reviewId }: { reviewId: string }) => {
         />
       </Box>
       <Stack className="basis-2/3 flex-col items-start gap-0 md:px-4">
-        <CardContent reviewId={reviewId} />
+        <CardContent {...review} />
         <Space h="md" />
-        <PiecePreview reviewId={reviewId} />
+        <PiecePreview
+          reviewedPiece={review.reviewedPiece}
+          authorRating={review.authorRating}
+        />
       </Stack>
     </Flex>
   );

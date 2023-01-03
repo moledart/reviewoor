@@ -1,29 +1,18 @@
 import { Group, Text, useMantineTheme, Stack, Box, Flex } from "@mantine/core";
 import { IoStar } from "react-icons/io5";
-import { trpc } from "../utils/trpc";
-import PieceSkeleton from "./PieceSkeleton";
 import Image from "next/image";
 import { useRouter } from "next/router";
+import { ReviewedPiece } from "@prisma/client";
 
-export const PiecePreview = ({ reviewId }: { reviewId: string }) => {
+export const PiecePreview = ({
+  reviewedPiece,
+  authorRating,
+}: {
+  reviewedPiece: ReviewedPiece;
+  authorRating: number;
+}) => {
   const theme = useMantineTheme();
   const router = useRouter();
-
-  const {
-    data: review,
-    isError,
-    isLoading,
-  } = trpc.review.getById.useQuery({ id: reviewId });
-
-  if (isLoading) return <PieceSkeleton />;
-  if (isError)
-    return (
-      <Text color="gray" size="sm">
-        Something went wrong
-      </Text>
-    );
-
-  const { reviewedPiece, authorRating } = review!;
 
   const { authors, image, label, id } = reviewedPiece;
 

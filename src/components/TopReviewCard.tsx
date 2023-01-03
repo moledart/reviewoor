@@ -1,18 +1,12 @@
-import { trpc } from "../utils/trpc";
-import { Card, useMantineTheme, Space, Skeleton, Box } from "@mantine/core";
+import { Card, useMantineTheme, Space, Box } from "@mantine/core";
 import logo from "../../public/logo.png";
 import { PiecePreview } from "./PiecePreview";
 import { CardContent } from "./CardContent";
 import Image from "next/image";
-import ReviewSkeleton from "./ReviewSkeleton";
+import { ReviewCardProps } from "../pages";
 
-export const TopReviewCard = ({ reviewId }: { reviewId: string }) => {
-  const { data: review, isLoading } = trpc.review.getById.useQuery({
-    id: reviewId,
-  });
+export const TopReviewCard = ({ review }: { review: ReviewCardProps }) => {
   const theme = useMantineTheme();
-
-  if (isLoading) return <ReviewSkeleton direction="col" />;
 
   return (
     <Card
@@ -27,9 +21,12 @@ export const TopReviewCard = ({ reviewId }: { reviewId: string }) => {
             className="object-cover"
           />
         </Box>
-        <CardContent reviewId={reviewId} />
+        <CardContent {...review} />
         <Space h="xl" />
-        <PiecePreview reviewId={reviewId} />
+        <PiecePreview
+          reviewedPiece={review.reviewedPiece}
+          authorRating={review.authorRating}
+        />
       </Card.Section>
     </Card>
   );

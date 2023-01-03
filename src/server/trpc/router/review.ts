@@ -5,21 +5,63 @@ import { router, publicProcedure, protectedProcedure } from "../trpc";
 export const reviewRouter = router({
   getAll: publicProcedure.query(({ ctx }) => {
     return ctx.prisma.review.findMany({
-      select: {
-        id: true,
-      },
       orderBy: {
         createdAt: "desc",
       },
+      include: {
+        author: true,
+        group: true,
+        tags: true,
+        userRating: true,
+        reviewedPiece: true,
+      },
     });
   }),
-  getTop: publicProcedure.query(({ ctx }) => {
-    return ctx.prisma.review.findMany({
-      select: {
-        id: true,
+  getTop: publicProcedure.query(async ({ ctx }) => {
+    const groupByReview = await ctx.prisma.userRating.groupBy({
+      by: ["reviewId"],
+      _avg: {
+        rating: true,
       },
-      take: 5,
     });
+
+    const topReviewsIds = groupByReview
+      .sort((a, b) => {
+        if (a._avg.rating === null) {
+          return 1;
+        }
+
+        if (b._avg.rating === null) {
+          return -1;
+        }
+
+        if (a._avg.rating === b._avg.rating) {
+          return 0;
+        }
+
+        return a._avg.rating < b._avg.rating ? 1 : -1;
+      })
+      .map((review) => review.reviewId);
+
+    const topReviews = await Promise.all(
+      topReviewsIds.map(async (id) => {
+        const review = await ctx.prisma.review.findUnique({
+          where: {
+            id,
+          },
+          include: {
+            author: true,
+            group: true,
+            tags: true,
+            userRating: true,
+            reviewedPiece: true,
+          },
+        });
+        return review;
+      })
+    );
+
+    return topReviews;
   }),
   getById: publicProcedure
     .input(z.object({ id: z.string() }))
@@ -28,17 +70,12 @@ export const reviewRouter = router({
         where: {
           id: input.id,
         },
-        select: {
+        include: {
           author: true,
-          userRating: true,
           group: true,
-          reviewedPiece: true,
           tags: true,
-          authorRating: true,
-          title: true,
-          subtitle: true,
-          thumbnail: true,
-          createdAt: true,
+          userRating: true,
+          reviewedPiece: true,
         },
       });
     }),
@@ -55,6 +92,7 @@ export const reviewRouter = router({
           group: true,
           tags: true,
           userRating: true,
+          reviewedPiece: true,
         },
       });
     }),
@@ -69,8 +107,12 @@ export const reviewRouter = router({
             },
           },
         },
-        select: {
-          id: true,
+        include: {
+          author: true,
+          group: true,
+          tags: true,
+          userRating: true,
+          reviewedPiece: true,
         },
       });
     }),
@@ -81,8 +123,12 @@ export const reviewRouter = router({
         where: {
           reviewedPieceId: input.pieceId,
         },
-        select: {
-          id: true,
+        include: {
+          author: true,
+          group: true,
+          tags: true,
+          userRating: true,
+          reviewedPiece: true,
         },
       });
     }),
@@ -93,8 +139,12 @@ export const reviewRouter = router({
         where: {
           authorId: input.authorId,
         },
-        select: {
-          id: true,
+        include: {
+          author: true,
+          group: true,
+          tags: true,
+          userRating: true,
+          reviewedPiece: true,
         },
       });
     }),

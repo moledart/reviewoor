@@ -20,9 +20,7 @@ const useData = (id: string, slug: string) => {
 const ReviewsList = () => {
   const router = useRouter();
   const { name, slug, id } = router.query;
-
-  const { data: reviewIds } = useData(id as string, slug as string);
-  console.log(router.query);
+  const { data: reviews } = useData(id as string, slug as string);
 
   return (
     <>
@@ -31,9 +29,9 @@ const ReviewsList = () => {
         <Stack spacing="lg">
           <Title order={1}>{name}</Title>
           <Stack spacing={32}>
-            {reviewIds?.length === 0 && <Text>Nothing found</Text>}
-            {reviewIds?.map(({ id }) => (
-              <ReviewCard reviewId={id} key={id} />
+            {reviews?.length === 0 && <Text>Nothing found</Text>}
+            {reviews?.map((review) => (
+              <ReviewCard review={review} key={review.id} />
             ))}
           </Stack>
         </Stack>

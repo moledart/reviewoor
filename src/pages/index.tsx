@@ -5,12 +5,11 @@ import { Container, Title, Stack, Group, Skeleton } from "@mantine/core";
 import { Carousel } from "@mantine/carousel";
 import {
   Group as TGroup,
-  Review,
-  ReviewedPiece,
-  Like,
-  UserRating,
-  User,
-  Tag as TagType,
+  Review as TReview,
+  ReviewedPiece as TReviewedPiece,
+  UserRating as TUserRating,
+  User as TUser,
+  Tag as TTag,
 } from "@prisma/client";
 import { TopReviewCard } from "../components/TopReviewCard";
 import homePage from "../lang/homepage";
@@ -20,23 +19,24 @@ import { ReviewCard } from "../components/ReviewCard";
 import TagsCloud from "../components/TagsCloud";
 import ReviewSkeleton from "../components/ReviewSkeleton";
 
-export type ReviewCardProps = Review & {
-  reviewedPiece: ReviewedPiece;
+export type ReviewCardProps = TReview & {
   group: TGroup;
-  like: Like[];
-  userRating: UserRating[];
-  author: User;
-  tags: TagType[];
+  userRating: TUserRating[];
+  author: TUser;
+  tags: TTag[];
+  reviewedPiece: TReviewedPiece;
 };
 
 const Home: NextPage = () => {
-  const { data: topReviewIds, isLoading: topLoading } =
+  const { data: topReviews, isLoading: topLoading } =
     trpc.review.getTop.useQuery();
-  const { data: reviewIds, isLoading: allLoading } =
+  const { data: allReviews, isLoading: allLoading } =
     trpc.review.getAll.useQuery();
   // gotta change to most popular tags
   const { data: tags, isLoading: tagsLoading } = trpc.tags.getAll.useQuery();
   const [lang] = useAtom(langSwitcherAtom);
+
+  console.log(tags);
 
   return (
     <>
@@ -63,9 +63,9 @@ const Home: NextPage = () => {
                         <ReviewSkeleton direction="col" />
                       </Carousel.Slide>
                     ))
-                : topReviewIds?.map(({ id }) => (
-                    <Carousel.Slide key={id}>
-                      <TopReviewCard reviewId={id} />
+                : topReviews?.map((review) => (
+                    <Carousel.Slide key={review?.id}>
+                      <TopReviewCard review={review as ReviewCardProps} />
                     </Carousel.Slide>
                   ))}
             </Carousel>
@@ -91,8 +91,8 @@ const Home: NextPage = () => {
                 ? Array(4)
                     .fill(1)
                     .map((val, i) => <ReviewSkeleton key={i} />)
-                : reviewIds?.map(({ id }) => (
-                    <ReviewCard reviewId={id} key={id} />
+                : allReviews?.map((review) => (
+                    <ReviewCard review={review} key={review.id} />
                   ))}
             </Stack>
           </Stack>

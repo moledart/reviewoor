@@ -1,33 +1,15 @@
 import { Group, Text, useMantineTheme, Box, Stack } from "@mantine/core";
 import Link from "next/link";
-import { trpc } from "../utils/trpc";
-import ReviewSkeleton from "./ReviewSkeleton";
-import { User } from "@prisma/client";
 import TagsCloud from "./TagsCloud";
 import Like from "./Like";
 import UserRating from "./UserRating";
+import { ReviewCardProps } from "../pages";
+import { User } from "@prisma/client";
 
-export const CardContent = ({ reviewId }: { reviewId: string }) => {
-  const {
-    data: review,
-    isError,
-    isLoading,
-  } = trpc.review.getById.useQuery({
-    id: reviewId,
-  });
-
+export const CardContent = (review: ReviewCardProps) => {
   const theme = useMantineTheme();
-
-  if (isLoading) return <ReviewSkeleton />;
-  if (isError)
-    return (
-      <Text color="gray" size="sm">
-        Something went wrong
-      </Text>
-    );
-
-  const { title, subtitle, author, group, userRating, createdAt, tags } =
-    review!;
+  const { id, title, subtitle, author, group, userRating, createdAt, tags } =
+    review;
 
   return (
     <Stack spacing={12} className="relative">
@@ -36,10 +18,10 @@ export const CardContent = ({ reviewId }: { reviewId: string }) => {
           <Text fz="10px" transform="uppercase">
             {group.name}
           </Text>
-          <Like reviewId={reviewId} />
+          <Like reviewId={id} />
         </Group>
         <Link
-          href={`/review/${reviewId}`}
+          href={`/review/${id}`}
           className="no-underline decoration-zinc-500 underline-offset-4 hover:underline"
         >
           <Text
