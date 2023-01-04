@@ -8,10 +8,10 @@ export const useDeleteReview = () => {
   const { mutate: handleDeleteReview } = trpc.review.delete.useMutation({
     onMutate: async ({ id }) => {
       await ctx.review.getByAuthor.cancel();
-
-      ctx.review.getByAuthor.setData({ authorId: session?.user?.id! }, (old) =>
-        old?.filter((review) => review.id !== id)
-      );
+      if (session?.user)
+        ctx.review.getByAuthor.setData({ authorId: session.user.id }, (old) =>
+          old?.filter((review) => review.id !== id)
+        );
     },
     onSuccess: () => {
       ctx.review.getByAuthor.invalidate();

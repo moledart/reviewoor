@@ -25,7 +25,7 @@ const Profile = () => {
   const router = useRouter();
   const theme = useMantineColorScheme();
   const { data: reviews } = trpc.review.getByAuthor.useQuery({
-    authorId: session?.user?.id!,
+    authorId: session?.user?.id || "",
   });
   const { handleDeleteReview } = useDeleteReview();
   const [lang] = useAtom(langSwitcherAtom);
