@@ -36,8 +36,6 @@ const Home: NextPage = () => {
   const { data: tags, isLoading: tagsLoading } = trpc.tags.getAll.useQuery();
   const [lang] = useAtom(langSwitcherAtom);
 
-  console.log(tags);
-
   return (
     <>
       <Navigation />

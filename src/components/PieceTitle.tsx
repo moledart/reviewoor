@@ -10,13 +10,17 @@ import { forwardRef, useEffect, useRef, useState } from "react";
 import { debounce } from "lodash";
 import { searchBooksOnGoogle } from "../utils/utils";
 import { useAtom } from "jotai";
-import reviewForm, { BookFromGoogle } from "../atoms/reviewFormData";
+import reviewForm from "../atoms/reviewFormData";
+import { ReviewedPiece } from "@prisma/client";
+import { langSwitcherAtom } from "../atoms/lang";
+import formLabels from "../lang/formLabels";
 
 const PieceTitle = () => {
   const [input, setInput] = useState("");
-  const [booksSearchResult, setBooksSearchResult] = useState<BookFromGoogle[]>(
+  const [booksSearchResult, setBooksSearchResult] = useState<ReviewedPiece[]>(
     []
   );
+  const [lang] = useAtom(langSwitcherAtom);
   const [reviewedPiece, setReviewedPiece] = useAtom(
     reviewForm.reviewedPieceAtom
   );
@@ -43,7 +47,7 @@ const PieceTitle = () => {
 
   return (
     <Select
-      label="Choose a book"
+      label={formLabels.pieceTitle[lang]}
       placeholder="The Night In Lisbon"
       searchable
       value={reviewedPiece?.value}

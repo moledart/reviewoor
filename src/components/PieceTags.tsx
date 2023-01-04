@@ -4,11 +4,14 @@ import { MultiSelect } from "@mantine/core";
 import { useEffect, useState } from "react";
 import { useAtom } from "jotai";
 import reviewForm from "../atoms/reviewFormData";
+import { langSwitcherAtom } from "../atoms/lang";
+import formLabels from "../lang/formLabels";
 
 const PieceTags = () => {
   const { data: tags } = trpc.tags.getAll.useQuery();
   const [selectOptions, setSelectOptions] = useState<string[]>([]);
   const [reviewTags, setReviewTags] = useAtom(reviewForm.tagsAtom);
+  const [lang] = useAtom(langSwitcherAtom);
 
   useEffect(() => {
     if (tags) setSelectOptions(tags.map((tag) => tag.name));
@@ -26,7 +29,7 @@ const PieceTags = () => {
 
   return (
     <MultiSelect
-      label="Add tags"
+      label={formLabels.tags[lang]}
       data={selectOptions}
       icon={<HiOutlineHashtag size={12} />}
       placeholder="Add tags"

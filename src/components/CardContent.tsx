@@ -5,24 +5,27 @@ import Like from "./Like";
 import UserRating from "./UserRating";
 import { ReviewCardProps } from "../pages";
 import { User } from "@prisma/client";
+import { useAtom } from "jotai";
+import { langSwitcherAtom } from "../atoms/lang";
 
 export const CardContent = (review: ReviewCardProps) => {
   const theme = useMantineTheme();
   const { id, title, subtitle, author, group, userRating, createdAt, tags } =
     review;
+  const [lang] = useAtom(langSwitcherAtom);
 
   return (
     <Stack spacing={12} className="relative">
       <Stack spacing={4}>
         <Group position="apart">
           <Text fz="10px" transform="uppercase">
-            {group.name}
+            {lang === "ru" ? "Книги" : group.name}
           </Text>
           <Like reviewId={id} />
         </Group>
         <Link
           href={`/review/${id}`}
-          className="no-underline decoration-zinc-500 underline-offset-4 hover:underline"
+          className="no-underline decoration-zinc-500 underline-offset-2 hover:underline"
         >
           <Text
             fz="20px"
@@ -62,18 +65,19 @@ export const ReviewAuthorAndDate = ({
   createdAt: Date;
 }) => {
   const theme = useMantineTheme();
+  const [lang] = useAtom(langSwitcherAtom);
 
   return (
     <Group spacing="xs">
       <Text size="xs" color="dimmed">
-        {createdAt.toLocaleDateString("en-US", {
+        {createdAt.toLocaleDateString(lang === "ru" ? "ru-RU" : "en-US", {
           year: "numeric",
           month: "long",
           day: "numeric",
         })}
       </Text>
       <Text size="xs">
-        by{" "}
+        {lang === "ru" ? "автор" : "by"}{" "}
         <Link
           href={`/reviews/author?name=${author.name}&id=${author.id}`}
           className={`no-underline decoration-zinc-500 underline-offset-4 hover:underline ${

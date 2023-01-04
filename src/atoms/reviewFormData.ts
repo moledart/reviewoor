@@ -1,25 +1,18 @@
+import { ReviewedPiece } from "@prisma/client";
 import { JSONContent } from "@tiptap/react";
 import { atom } from "jotai";
 import { focusAtom } from "jotai-optics";
+import { JSONValue } from "superjson/dist/types";
 
 export type NewReviewFormData = {
   title: string;
-  subtitle: string;
+  subtitle: string | null;
   group: string;
-  reviewedPiece: BookFromGoogle | null;
-  content: JSONContent | null;
+  reviewedPiece: ReviewedPiece | null;
+  content: JSONValue | null;
   authorRating: number;
   tags: string[];
-  thumbnail: string;
-};
-
-export type BookFromGoogle = {
-  value: string;
-  label: string;
-  authors: string;
-  published: string;
-  image: string;
-  group: string;
+  thumbnail: string | null;
 };
 
 export const initialFormData = {
@@ -27,6 +20,7 @@ export const initialFormData = {
   subtitle: "",
   group: "Books",
   reviewedPiece: {
+    id: "",
     group: "",
     image: "",
     label: "",

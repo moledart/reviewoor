@@ -112,7 +112,7 @@ model Comment {
   createdAt DateTime @default(now())
   user      User     @relation(fields: [userId], references: [id])
   userId    String
-  review    Review   @relation(fields: [reviewId], references: [id])
+  review    Review   @relation(fields: [reviewId], references: [id], onDelete: Cascade)
   reviewId  String
 }
 
@@ -120,7 +120,7 @@ model Like {
   id       String @id @default(cuid())
   user     User   @relation(fields: [userId], references: [id])
   userId   String
-  review   Review @relation(fields: [reviewId], references: [id])
+  review   Review @relation(fields: [reviewId], references: [id], onDelete: Cascade)
   reviewId String
 }
 
@@ -129,7 +129,7 @@ model UserRating {
   rating   Int
   user     User   @relation(fields: [userId], references: [id])
   userId   String
-  review   Review @relation(fields: [reviewId], references: [id])
+  review   Review @relation(fields: [reviewId], references: [id], onDelete: Cascade)
   reviewId String
 }
 

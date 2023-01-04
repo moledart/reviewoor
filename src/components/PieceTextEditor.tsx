@@ -1,5 +1,5 @@
 import { RichTextEditor, Link } from "@mantine/tiptap";
-import { useEditor, BubbleMenu, FloatingMenu } from "@tiptap/react";
+import { useEditor, BubbleMenu, FloatingMenu, Content } from "@tiptap/react";
 import Highlight from "@tiptap/extension-highlight";
 import StarterKit from "@tiptap/starter-kit";
 import Underline from "@tiptap/extension-underline";
@@ -10,32 +10,39 @@ import Placeholder from "@tiptap/extension-placeholder";
 import { Stack, Text } from "@mantine/core";
 import { useAtom } from "jotai";
 import reviewForm from "../atoms/reviewFormData";
+import { useEffect, useState } from "react";
+import { langSwitcherAtom } from "../atoms/lang";
+import formLabels from "../lang/formLabels";
 
 const PieceTextEditor = () => {
   const [reviewContent, setReviewContent] = useAtom(reviewForm.contentAtom);
+  const [lang] = useAtom(langSwitcherAtom);
 
-  const editor = useEditor({
-    extensions: [
-      StarterKit,
-      Underline,
-      Link,
-      Superscript,
-      SubScript,
-      Highlight,
-      TextAlign.configure({ types: ["heading", "paragraph"] }),
-      Placeholder.configure({ placeholder: "Start typing" }),
-    ],
+  const editor = useEditor(
+    {
+      extensions: [
+        StarterKit,
+        Underline,
+        Link,
+        Superscript,
+        SubScript,
+        Highlight,
+        TextAlign.configure({ types: ["heading", "paragraph"] }),
+        Placeholder.configure({ placeholder: "Start typing" }),
+      ],
 
-    content: reviewContent,
-    onUpdate({ editor }) {
-      const content = editor.getJSON();
-      setReviewContent(content);
+      content: reviewContent as Content,
+      onUpdate({ editor }) {
+        const content = editor.getJSON();
+        setReviewContent(content);
+      },
     },
-  });
+    []
+  );
 
   return (
     <Stack spacing={8}>
-      <Text size="sm">Write your review here </Text>
+      <Text size="sm">{formLabels.content[lang]}</Text>
 
       <RichTextEditor editor={editor}>
         <RichTextEditor.Toolbar sticky stickyOffset={60}>

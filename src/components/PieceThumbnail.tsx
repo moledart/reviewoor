@@ -14,14 +14,17 @@ import { IconUpload, IconPhoto, IconX } from "@tabler/icons";
 import { useAtom } from "jotai";
 import reviewForm from "../atoms/reviewFormData";
 import { thumbnailBlobAtom } from "../atoms/thumbnailBlob";
+import { langSwitcherAtom } from "../atoms/lang";
+import formLabels from "../lang/formLabels";
 
 const PieceThumbnail = () => {
   const [thumbnail] = useAtom(reviewForm.thumbnailAtom);
   const [thumbnailBlob, setThumbnailBlob] = useAtom(thumbnailBlobAtom);
-
+  const [lang] = useAtom(langSwitcherAtom);
   const [imageUrl, setImageUrl] = useState<string | null>(null);
 
   const theme = useMantineTheme();
+  console.log(thumbnail);
 
   const handleChangeThumbnail = (files: FileWithPath[]) => {
     setThumbnailBlob(files);
@@ -41,7 +44,7 @@ const PieceThumbnail = () => {
 
   return (
     <Stack spacing={8}>
-      <Text size="sm">Add a thumbnail</Text>
+      <Text size="sm">{formLabels.thumbnail[lang]}</Text>
 
       <SimpleGrid cols={imageUrl ? 2 : 1}>
         {imageUrl && (
@@ -89,7 +92,7 @@ const PieceThumbnail = () => {
             </Dropzone.Idle>
             <Box>
               <Text size="md" inline ta="center">
-                Drag images here or click to select files
+                {formLabels.filepicker[lang]}
               </Text>
             </Box>
           </Flex>

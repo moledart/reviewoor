@@ -2,8 +2,7 @@ import { FileWithPath } from "@mantine/dropzone";
 import { env } from "../env/client.mjs";
 import { storage } from "../server/firebaseConfig";
 import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
-import { boolean } from "zod";
-import { BookFromGoogle } from "../atoms/reviewFormData.js";
+import { ReviewedPiece } from "@prisma/client";
 
 const baseGoogleApiUrl = "https://www.googleapis.com/books/v1/volumes";
 const apiKey = `key=${env.NEXT_PUBLIC_GOOGLE_BOOKS_API}`;
@@ -17,9 +16,7 @@ export const generateSearchUrl = (searchBy: string, searchValue: string) => {
   return searchUrl;
 };
 
-export const transformBooksDataFromGoogleApi = (
-  data: any
-): BookFromGoogle[] => {
+export const transformBooksDataFromGoogleApi = (data: any): ReviewedPiece[] => {
   // getting all ids from response
   const ids = data?.items?.map((book: any) => book.id);
   // removing duplicates from google api
@@ -31,7 +28,6 @@ export const transformBooksDataFromGoogleApi = (
       authors: book?.volumeInfo?.authors?.join(", "),
       published: book.volumeInfo.publishedDate,
       image: book.volumeInfo.imageLinks?.smallThumbnail || "",
-      group: "Books",
     }));
 };
 

@@ -1,5 +1,4 @@
 import { Center, Container, LoadingOverlay, Stack } from "@mantine/core";
-import { useEffect, useState } from "react";
 import { useSession } from "next-auth/react";
 import { LoginButton } from "../../components/LoginButton";
 import Navigation from "../../components/Navigation";
@@ -11,10 +10,21 @@ import PieceTextEditor from "../../components/PieceTextEditor";
 import { useCreateReview } from "../../hooks/useCreateReview";
 import PieceReviewTitle from "../../components/PieceReviewTitle";
 import PieceReviewSubtitle from "../../components/PieceReviewSubtitle";
+import { useRouter } from "next/router";
+import { trpc } from "../../utils/trpc";
+import { dataAtom, initialFormData } from "../../atoms/reviewFormData";
+import { useAtom } from "jotai";
+import { useEffect } from "react";
 
 const ReviewEditor = () => {
   const { data: session } = useSession();
   const { isLoading } = useCreateReview();
+
+  const [, setFormData] = useAtom(dataAtom);
+
+  useEffect(() => {
+    setFormData(initialFormData);
+  }, []);
 
   if (!session)
     return (

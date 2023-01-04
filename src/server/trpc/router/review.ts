@@ -96,6 +96,20 @@ export const reviewRouter = router({
         },
       });
     }),
+  getDataForReviewEdit: protectedProcedure
+    .input(z.object({ id: z.string() }))
+    .query(({ ctx, input }) => {
+      return ctx.prisma.review.findUnique({
+        where: {
+          id: input.id,
+        },
+        include: {
+          reviewedPiece: true,
+          tags: true,
+          group: true,
+        },
+      });
+    }),
   getByTag: publicProcedure
     .input(z.object({ tagId: z.string() }))
     .query(({ ctx, input }) => {
@@ -211,6 +225,79 @@ export const reviewRouter = router({
           content,
           authorRating,
           thumbnail,
+        },
+      });
+    }),
+  update: protectedProcedure
+    .input(schema.postSchema)
+    .mutation(async ({ input, ctx }) => {
+      const {
+        title,
+        subtitle,
+        reviewedPiece,
+        group,
+        tags,
+        content,
+        authorRating,
+        thumbnail,
+        id,
+      } = input;
+      const { value, label, authors, published, image } = reviewedPiece;
+      return await ctx.prisma.review.update({
+        where: {
+          id,
+        },
+        data: {
+          title,
+          subtitle,
+          reviewedPiece: {
+            connectOrCreate: {
+              where: {
+                value,
+              },
+              create: {
+                value,
+                label,
+                authors,
+                published,
+                image,
+              },
+            },
+          },
+          group: {
+            connectOrCreate: {
+              where: {
+                name: group,
+              },
+              create: {
+                name: group,
+              },
+            },
+          },
+          tags: {
+            connectOrCreate: tags?.map((tag) => {
+              return {
+                where: {
+                  name: tag,
+                },
+                create: {
+                  name: tag,
+                },
+              };
+            }),
+          },
+          content,
+          authorRating,
+          thumbnail,
+        },
+      });
+    }),
+  delete: protectedProcedure
+    .input(z.object({ id: z.string() }))
+    .mutation(async ({ ctx, input }) => {
+      return await ctx.prisma.review.delete({
+        where: {
+          id: input.id,
         },
       });
     }),

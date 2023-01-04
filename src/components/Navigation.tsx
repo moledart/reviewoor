@@ -13,6 +13,7 @@ import { useEffect, useState } from "react";
 import reviewForm from "../atoms/reviewFormData";
 
 import { useCreateReview } from "../hooks/useCreateReview";
+import { useUpdateReview } from "../hooks/useUpdateReview";
 
 const Navigation = () => {
   const { data: session } = useSession();
@@ -20,7 +21,8 @@ const Navigation = () => {
   const [lang] = useAtom(langSwitcherAtom);
   const [isReadyForPublishing, setIsReadyForPublishing] = useState(false);
   const [formData] = useAtom(reviewForm.dataAtom);
-  const { handleCreateReview, isLoading, isError } = useCreateReview();
+  const { handleCreateReview } = useCreateReview();
+  const { handleUpdateReview } = useUpdateReview();
 
   useEffect(() => {
     formData.title.length > 0 && formData.reviewedPiece && formData.content
@@ -35,7 +37,7 @@ const Navigation = () => {
       </Link>
       {session ? (
         <>
-          {router.pathname === "/review-editor" ? (
+          {router.pathname.includes("/review-editor") ? (
             <>
               <Button
                 leftIcon={<HiOutlinePencilSquare size={14} />}
@@ -43,7 +45,11 @@ const Navigation = () => {
                 className="bg-zinc-800"
                 color="dark"
                 fw="400"
-                onClick={() => handleCreateReview()}
+                onClick={() =>
+                  router.query.id
+                    ? handleUpdateReview(router.query.id as string)
+                    : handleCreateReview()
+                }
                 disabled={!isReadyForPublishing}
               >
                 {lang === "ru" ? "Опубликовать" : "Publish"}

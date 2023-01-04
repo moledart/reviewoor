@@ -7,26 +7,26 @@ import { useRouter } from "next/router";
 import { initialFormData } from "../atoms/reviewFormData";
 import { useState } from "react";
 
-export const useCreateReview = () => {
+export const useUpdateReview = () => {
   const ctx = trpc.useContext();
   const router = useRouter();
   const [formData, setFormData] = useAtom(reviewFormData.dataAtom);
   const [thumbnailBlob] = useAtom(thumbnailBlobAtom);
-  const [isLoading, setIsLoading] = useState(false);
 
-  const { mutate: createReview, isError } = trpc.review.create.useMutation({
-    onMutate: () => {
-      setIsLoading(true);
-    },
-    onSuccess: (data, variables, context) => {
+  const {
+    mutate: updateReview,
+    isError,
+    isLoading,
+  } = trpc.review.update.useMutation({
+    onSuccess: (data) => {
       setFormData(initialFormData);
       ctx.review.invalidate();
-      setIsLoading(false);
+      ctx.review.getFullContentById.invalidate({ id: data.id });
       router.push(`/review/${data.id}`);
     },
   });
 
-  const handleCreateReview = async () => {
+  const handleUpdateReview = async (id: string) => {
     const {
       authorRating,
       content,
@@ -43,7 +43,8 @@ export const useCreateReview = () => {
     }
 
     if (reviewedPiece) {
-      createReview({
+      updateReview({
+        id,
         authorRating,
         subtitle,
         group,
@@ -56,5 +57,5 @@ export const useCreateReview = () => {
     }
   };
 
-  return { handleCreateReview, isLoading, isError };
+  return { handleUpdateReview, isLoading, isError };
 };

@@ -30,9 +30,6 @@ export const useLike = () => {
     },
   });
 
-  const handleLikeReview = (reviewId: string) => {
-    mutate({ reviewId });
-  };
-
+  const handleLikeReview = (reviewId: string) => mutate({ reviewId });
   return { handleLikeReview };
 };
