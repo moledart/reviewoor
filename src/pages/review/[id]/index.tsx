@@ -1,7 +1,16 @@
 import { useRouter } from "next/router";
 import Navigation from "../../../components/Navigation";
 import { trpc } from "../../../utils/trpc";
-import { Container, Flex, Group, Stack, Text, Title } from "@mantine/core";
+import {
+  Center,
+  Container,
+  Flex,
+  Group,
+  Loader,
+  Stack,
+  Text,
+  Title,
+} from "@mantine/core";
 import { ReviewAuthorAndDate } from "../../../components/CardContent";
 import Like from "../../../components/Like";
 import UserRating from "../../../components/UserRating";
@@ -17,9 +26,32 @@ import ReviewContent from "../../../components/ReviewContent";
 const ReviewReader = () => {
   const { data: session } = useSession();
   const router = useRouter();
-  const { data: review } = trpc.review.getFullContentById.useQuery({
-    id: router.query.id as string,
-  });
+  const {
+    data: review,
+    isLoading,
+    isError,
+  } = trpc.review.getFullContentById.useQuery(
+    {
+      id: router.query.id as string,
+    },
+    {
+      staleTime: Infinity,
+    }
+  );
+
+  if (isLoading)
+    return (
+      <Center className="h-screen">
+        <Loader color="dark" />
+      </Center>
+    );
+
+  if (isError)
+    return (
+      <Center className="h-screen">
+        <Text>Sorry, something went wrong!</Text>
+      </Center>
+    );
 
   return (
     <>

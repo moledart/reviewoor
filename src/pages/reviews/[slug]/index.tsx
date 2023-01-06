@@ -5,16 +5,20 @@ import { Container, Stack, Text, Title } from "@mantine/core";
 import { ReviewCard } from "../../../components/ReviewCard";
 
 const useData = (id: string, slug: string) => {
+  const infiniteStaleTime = { staleTime: Infinity };
   if (slug === "author") {
-    return trpc.review.getByAuthor.useQuery({ authorId: id });
+    return trpc.review.getByAuthor.useQuery(
+      { authorId: id },
+      infiniteStaleTime
+    );
   }
   if (slug === "tag") {
-    return trpc.review.getByTag.useQuery({ tagId: id });
+    return trpc.review.getByTag.useQuery({ tagId: id }, infiniteStaleTime);
   }
   if (slug === "piece") {
-    return trpc.review.getByPiece.useQuery({ pieceId: id });
+    return trpc.review.getByPiece.useQuery({ pieceId: id }, infiniteStaleTime);
   }
-  return trpc.review.getAll.useQuery();
+  return trpc.review.getAll.useQuery(undefined, infiniteStaleTime);
 };
 
 const ReviewsList = () => {

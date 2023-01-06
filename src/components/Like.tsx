@@ -14,6 +14,7 @@ const Like = ({ reviewId }: { reviewId: string }) => {
   const hasUserLikedAlready = likes?.find(
     (like) => like.userId === session?.user?.id
   );
+
   return (
     <Group className="items-center gap-0">
       {likes?.length && (

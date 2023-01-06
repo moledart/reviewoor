@@ -23,7 +23,6 @@ export const useRate = () => {
         } else {
           newRating = { rating, reviewId, userId, id: cuid() };
         }
-        console.log("newRating", newRating);
         ctx.rating.getUserRatingByReview.setData(
           { reviewId, userId },
           newRating

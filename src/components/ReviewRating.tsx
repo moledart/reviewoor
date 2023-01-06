@@ -17,7 +17,6 @@ const ReviewRating = ({
   const { handleRateReview } = useRate();
   const [lang] = useAtom(langSwitcherAtom);
 
-  console.log(currentUserRating?.rating);
   return (
     <Stack spacing={8}>
       <Text>
@@ -26,7 +25,7 @@ const ReviewRating = ({
           : "How would you rate it?"}
       </Text>
       <Rating
-        defaultValue={7}
+        defaultValue={0}
         size="xl"
         count={5}
         value={currentUserRating?.rating}

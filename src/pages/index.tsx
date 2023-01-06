@@ -18,6 +18,7 @@ import { langSwitcherAtom } from "../atoms/lang";
 import { ReviewCard } from "../components/ReviewCard";
 import TagsCloud from "../components/TagsCloud";
 import ReviewSkeleton from "../components/ReviewSkeleton";
+import { useReviews } from "../hooks/useReviews";
 
 export type ReviewCardProps = TReview & {
   group: TGroup;
@@ -29,11 +30,12 @@ export type ReviewCardProps = TReview & {
 
 const Home: NextPage = () => {
   const { data: topReviews, isLoading: topLoading } =
-    trpc.review.getTop.useQuery();
-  const { data: allReviews, isLoading: allLoading } =
-    trpc.review.getAll.useQuery();
-  // gotta change to most popular tags
-  const { data: tags, isLoading: tagsLoading } = trpc.tags.getAll.useQuery();
+    trpc.review.getTop.useQuery(undefined, { staleTime: Infinity });
+  const { reviews: allReviews, isLoading: allLoading } = useReviews();
+  const { data: tags, isLoading: tagsLoading } = trpc.tags.getAll.useQuery(
+    undefined,
+    { staleTime: Infinity }
+  );
   const [lang] = useAtom(langSwitcherAtom);
 
   return (

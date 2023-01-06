@@ -49,8 +49,6 @@ const ReviewEditor = () => {
       </Center>
     );
 
-  console.log(formData);
-
   return (
     <>
       <Navigation />

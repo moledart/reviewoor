@@ -3,6 +3,7 @@ import { IoStar } from "react-icons/io5";
 import Image from "next/image";
 import { useRouter } from "next/router";
 import { ReviewedPiece } from "@prisma/client";
+import { trpc } from "../utils/trpc";
 
 export const PiecePreview = ({
   reviewedPiece,
@@ -13,6 +14,7 @@ export const PiecePreview = ({
 }) => {
   const theme = useMantineTheme();
   const router = useRouter();
+  const trpcUtils = trpc.useContext();
 
   const { authors, image, label, id } = reviewedPiece;
 
@@ -25,8 +27,9 @@ export const PiecePreview = ({
       } `}
       bg={theme.colorScheme === "light" ? "orange.0" : "gray.9"}
       onClick={() => router.push(`/reviews/piece?name=${label}&id=${id}`)}
+      onMouseEnter={() => trpcUtils.review.getByPiece.prefetch({ pieceId: id })}
     >
-      <Box className="relative  w-16">
+      <Box className="relative w-16">
         <Image
           src={image}
           alt={label}

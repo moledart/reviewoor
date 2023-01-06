@@ -7,12 +7,14 @@ import { ReviewCardProps } from "../pages";
 import { User } from "@prisma/client";
 import { useAtom } from "jotai";
 import { langSwitcherAtom } from "../atoms/lang";
+import { trpc } from "../utils/trpc";
 
 export const CardContent = (review: ReviewCardProps) => {
   const theme = useMantineTheme();
   const { id, title, subtitle, author, group, userRating, createdAt, tags } =
     review;
   const [lang] = useAtom(langSwitcherAtom);
+  const trpcUtils = trpc.useContext();
 
   return (
     <Stack spacing={12} className="relative">
@@ -26,6 +28,9 @@ export const CardContent = (review: ReviewCardProps) => {
         <Link
           href={`/review/${id}`}
           className="no-underline decoration-zinc-500 underline-offset-2 hover:underline"
+          onMouseEnter={() =>
+            trpcUtils.review.getFullContentById.prefetch({ id })
+          }
         >
           <Text
             fz="20px"
@@ -66,6 +71,7 @@ export const ReviewAuthorAndDate = ({
 }) => {
   const theme = useMantineTheme();
   const [lang] = useAtom(langSwitcherAtom);
+  const trpcUtils = trpc.useContext();
 
   return (
     <Group spacing="xs">
@@ -83,6 +89,9 @@ export const ReviewAuthorAndDate = ({
           className={`no-underline decoration-zinc-500 underline-offset-4 hover:underline ${
             theme.colorScheme === "light" ? "text-zinc-900" : "text-zinc-200"
           }`}
+          onMouseEnter={() =>
+            trpcUtils.review.getByAuthor.prefetch({ authorId: author.id })
+          }
         >
           {author.name}
         </Link>

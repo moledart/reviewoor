@@ -1,7 +1,7 @@
 const homePage = {
   topTitle: {
     ru: "Топ обзоры",
-    en: "Top Stories",
+    en: "Top Reviews",
   },
   tagsTitle: {
     ru: "Популярные тэги",

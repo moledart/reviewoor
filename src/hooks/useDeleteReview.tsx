@@ -15,6 +15,7 @@ export const useDeleteReview = () => {
     },
     onSuccess: () => {
       ctx.review.getByAuthor.invalidate();
+      ctx.review.invalidate();
     },
   });
 
