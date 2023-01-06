@@ -1,9 +1,20 @@
 import { Button, Center, Group } from "@mantine/core";
 import { useAtom } from "jotai";
-import { langSwitcherAtom } from "../atoms/lang";
+import { Lang, langSwitcherAtom } from "../atoms/lang";
+import { useLocalStorage } from "@mantine/hooks";
+import { useEffect } from "react";
 
 const LangSwitcher = () => {
-  const [lang, setLang] = useAtom(langSwitcherAtom);
+  const [, setLocalLang] = useAtom(langSwitcherAtom);
+  const [lang, setLang] = useLocalStorage<Lang>({
+    key: "lang",
+    defaultValue: "en",
+    getInitialValueInEffect: true,
+  });
+
+  useEffect(() => {
+    setLocalLang(lang);
+  }, [lang]);
 
   return (
     <Center className="gap-2">

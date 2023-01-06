@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { signOut, useSession } from "next-auth/react";
 import Image from "next/image";
 import {
@@ -8,7 +8,7 @@ import {
   UnstyledButton,
   useMantineColorScheme,
 } from "@mantine/core";
-import { useClickOutside } from "@mantine/hooks";
+import { useClickOutside, useLocalStorage } from "@mantine/hooks";
 import {
   IoPersonOutline,
   IoLanguageOutline,
@@ -16,7 +16,7 @@ import {
   IoLogOutOutline,
   IoMoon,
 } from "react-icons/io5";
-import { langSwitcherAtom } from "../atoms/lang";
+import { Lang, langSwitcherAtom } from "../atoms/lang";
 import { useAtom } from "jotai";
 import content from "../lang/accountMenu";
 import Link from "next/link";
@@ -24,7 +24,17 @@ import { useRouter } from "next/router";
 
 const Account = () => {
   const { data: session } = useSession();
-  const [lang, setLang] = useAtom(langSwitcherAtom);
+  const [, setLocalLang] = useAtom(langSwitcherAtom);
+  const [lang, setLang] = useLocalStorage<Lang>({
+    key: "lang",
+    defaultValue: "en",
+    getInitialValueInEffect: true,
+  });
+
+  useEffect(() => {
+    setLocalLang(lang);
+  }, [lang]);
+
   const { colorScheme, toggleColorScheme } = useMantineColorScheme();
   const [opened, setOpened] = useState(false);
   const router = useRouter();

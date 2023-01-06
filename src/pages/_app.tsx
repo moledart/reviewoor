@@ -8,17 +8,20 @@ import {
   ColorSchemeProvider,
   ColorScheme,
 } from "@mantine/core";
-
 import { trpc } from "../utils/trpc";
-
-import { useState } from "react";
 import Head from "next/head";
+import { useLocalStorage } from "@mantine/hooks";
 
 const MyApp: AppType<{ session: Session | null }> = ({
   Component,
   pageProps: { session, ...pageProps },
 }) => {
-  const [colorScheme, setColorScheme] = useState<ColorScheme>("light");
+  const [colorScheme, setColorScheme] = useLocalStorage<ColorScheme>({
+    key: "mantine-color-scheme",
+    defaultValue: "light",
+    getInitialValueInEffect: true,
+  });
+
   const toggleColorScheme = (value?: ColorScheme) =>
     setColorScheme(value || (colorScheme === "dark" ? "light" : "dark"));
 
