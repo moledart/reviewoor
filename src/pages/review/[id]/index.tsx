@@ -2,6 +2,8 @@ import { useRouter } from "next/router";
 import Navigation from "../../../components/Navigation";
 import { trpc } from "../../../utils/trpc";
 import {
+  Box,
+  Button,
   Center,
   Container,
   Flex,
@@ -22,6 +24,10 @@ import ReviewRating from "../../../components/ReviewRating";
 import { PiecePreview } from "../../../components/PiecePreview";
 import Image from "next/image";
 import ReviewContent from "../../../components/ReviewContent";
+import { useRef } from "react";
+import { jsPDF } from "jspdf";
+import html2canvas from "html2canvas";
+import { IoDocumentTextOutline } from "react-icons/io5";
 
 const ReviewReader = () => {
   const { data: session } = useSession();
@@ -40,6 +46,21 @@ const ReviewReader = () => {
     }
   );
 
+  const printRef = useRef<HTMLDivElement>(null);
+
+  const handleDownloadPdf = async () => {
+    const element = printRef.current;
+    const canvas = await html2canvas(element as HTMLElement);
+    const data = canvas.toDataURL("image/png");
+
+    const pdf = new jsPDF("p", "pt", "a4");
+    const pdfWidth = pdf.internal.pageSize.getWidth() - 200;
+    const pdfHeight = pdf.internal.pageSize.getHeight();
+
+    pdf.addImage(data, "PNG", 100, 0, pdfWidth, pdfHeight);
+    pdf.save("print.pdf");
+  };
+
   if (isLoading)
     return (
       <Center className="h-screen">
@@ -57,7 +78,7 @@ const ReviewReader = () => {
   return (
     <>
       <Navigation />
-      <Container className="max-w-[80ch] pb-12">
+      <Container className="max-w-[80ch] pb-12" ref={printRef}>
         {review && (
           <Stack spacing={24}>
             <Flex className="relative h-60 md:h-96">
@@ -89,9 +110,21 @@ const ReviewReader = () => {
             />
             <ReviewContent content={review.content} />
             <TagsCloud tags={review.tags} />
+
             {session?.user && (
               <ReviewRating reviewId={review.id} userId={session.user.id} />
             )}
+            <Box>
+              <Button
+                leftIcon={<IoDocumentTextOutline />}
+                onClick={handleDownloadPdf}
+                variant="default"
+                color="dark"
+                size="xs"
+              >
+                Download PDF
+              </Button>
+            </Box>
           </Stack>
         )}
       </Container>
