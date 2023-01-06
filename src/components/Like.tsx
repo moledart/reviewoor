@@ -7,7 +7,10 @@ import { IoHeart, IoHeartOutline } from "react-icons/io5";
 const Like = ({ reviewId }: { reviewId: string }) => {
   const { data: session } = useSession();
 
-  const { data: likes } = trpc.like.getLikes.useQuery({ reviewId });
+  const { data: likes } = trpc.like.getLikes.useQuery(
+    { reviewId },
+    { enabled: !!reviewId }
+  );
 
   const { handleLikeReview } = useLike();
 

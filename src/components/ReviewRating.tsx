@@ -12,7 +12,10 @@ const ReviewRating = ({
   userId: string;
 }) => {
   const { data: currentUserRating } =
-    trpc.rating.getUserRatingByReview.useQuery({ reviewId, userId });
+    trpc.rating.getUserRatingByReview.useQuery(
+      { reviewId, userId },
+      { enabled: !!reviewId && !!userId }
+    );
 
   const { handleRateReview } = useRate();
   const [lang] = useAtom(langSwitcherAtom);

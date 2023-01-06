@@ -36,6 +36,7 @@ const ReviewReader = () => {
     },
     {
       staleTime: Infinity,
+      enabled: !!router.query.id,
     }
   );
 
