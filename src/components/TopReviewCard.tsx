@@ -19,6 +19,8 @@ export const TopReviewCard = ({ review }: { review: ReviewCardProps }) => {
             alt={review?.title as string}
             fill={true}
             className="object-cover"
+            priority
+            quality={50}
           />
         </Box>
         <CardContent {...review} />

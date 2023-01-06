@@ -20,6 +20,7 @@ export const ReviewCard = ({ review }: { review: ReviewCardProps }) => {
           alt={review?.title as string}
           fill={true}
           className="object-cover"
+          quality={50}
         />
       </Box>
       <Stack className="basis-2/3 flex-col items-start gap-0 md:px-4">

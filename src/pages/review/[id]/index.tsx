@@ -65,6 +65,7 @@ const ReviewReader = () => {
                 alt={review.title}
                 fill={true}
                 className="object-cover"
+                priority
               />
             </Flex>
             <Stack spacing={8}>

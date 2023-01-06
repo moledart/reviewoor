@@ -14,6 +14,7 @@ const config = {
     defaultLocale: "en",
   },
   images: {
+    imageSizes: [16, 32, 48, 64, 96, 128, 256, 256],
     remotePatterns: [
       {
         protocol: "https",
