@@ -4,6 +4,7 @@ import {
   Center,
   Container,
   Group,
+  Skeleton,
   Stack,
   Text,
   Title,
@@ -24,15 +25,22 @@ const Profile = () => {
   const { data: session } = useSession();
   const router = useRouter();
   const theme = useMantineColorScheme();
-  const { data: reviews } = trpc.review.getByAuthor.useQuery({
-    authorId: session?.user?.id || "",
-  });
   const { handleDeleteReview } = useDeleteReview();
   const [lang] = useAtom(langSwitcherAtom);
+  const userId = session?.user?.id;
+  const { data: reviews, isLoading } = trpc.review.getByAuthor.useQuery(
+    {
+      authorId: userId as string,
+    },
+    {
+      enabled: !!userId,
+    }
+  );
 
-  if (!session)
+  if (!session?.user)
     return (
-      <Center className="min-h-screen">
+      <Center className="flex min-h-screen flex-col gap-4">
+        <Text>You need to login first</Text>
         <LoginButton />
       </Center>
     );
@@ -46,59 +54,67 @@ const Profile = () => {
           {session?.user?.name}
         </Title>
         <Stack spacing={0}>
-          {reviews?.map((review) => (
-            <Group
-              key={review.id}
-              className={`group min-h-[52px] flex-col items-start gap-0 p-3 lg:flex-row  lg:items-center lg:gap-2 ${
-                theme.colorScheme === "light"
-                  ? "hover:bg-zinc-50"
-                  : "hover:bg-zinc-900"
-              } `}
-            >
-              <Text color="dimmed" fz={12} className="min-w-[100px]">
-                {review.createdAt.toLocaleDateString(
-                  lang === "ru" ? "ru-RU" : "en-US",
-                  {
-                    year: "numeric",
-                    month: "long",
-                    day: "numeric",
-                  }
-                )}
-              </Text>
-              <Group className="w-full flex-nowrap items-center md:flex-row lg:flex-1">
-                <Link
-                  href={`/review/${review.id}`}
-                  className="no-underline decoration-zinc-500 underline-offset-2 hover:underline"
+          {isLoading
+            ? Array(8)
+                .fill(1)
+                .map((val, i) => (
+                  <Skeleton height={28} mb={12} mt={12} key={i} />
+                ))
+            : reviews?.map((review) => (
+                <Group
+                  key={review.id}
+                  className={`group min-h-[52px] flex-col items-start gap-0 p-3 lg:flex-row  lg:items-center lg:gap-2 ${
+                    theme.colorScheme === "light"
+                      ? "hover:bg-zinc-50"
+                      : "hover:bg-zinc-900"
+                  } `}
                 >
-                  <Text
-                    fz={14}
-                    weight={600}
-                    lineClamp={1}
-                    lh="140%"
-                    className={
-                      theme.colorScheme === "light"
-                        ? "text-zinc-900"
-                        : "text-zinc-200"
-                    }
-                  >
-                    {review.title}
+                  <Text color="dimmed" fz={12} className="min-w-[100px]">
+                    {review.createdAt.toLocaleDateString(
+                      lang === "ru" ? "ru-RU" : "en-US",
+                      {
+                        year: "numeric",
+                        month: "long",
+                        day: "numeric",
+                      }
+                    )}
                   </Text>
-                </Link>
-                <Group className="ml-auto flex-nowrap group-hover:flex md:hidden">
-                  <ActionIcon
-                    onClick={() => router.push(`/review-editor/${review.id}`)}
-                  >
-                    <HiOutlinePencilSquare size={20} />
-                  </ActionIcon>
-                  <ActionIcon
-                    onClick={() => handleDeleteReview({ id: review.id })}
-                  >
-                    <IoTrashOutline size={20} className="text-pink-500" />
-                  </ActionIcon>
+                  <Group className="w-full flex-nowrap items-center md:flex-row lg:flex-1">
+                    <Link
+                      href={`/review/${review.id}`}
+                      className="no-underline decoration-zinc-500 underline-offset-2 hover:underline"
+                    >
+                      <Text
+                        fz={14}
+                        weight={600}
+                        lineClamp={1}
+                        lh="140%"
+                        className={
+                          theme.colorScheme === "light"
+                            ? "text-zinc-900"
+                            : "text-zinc-200"
+                        }
+                      >
+                        {review.title}
+                      </Text>
+                    </Link>
+                    <Group className="ml-auto flex-nowrap group-hover:flex md:hidden">
+                      <ActionIcon
+                        onClick={() =>
+                          router.push(`/review-editor/${review.id}`)
+                        }
+                      >
+                        <HiOutlinePencilSquare size={20} />
+                      </ActionIcon>
+                      <ActionIcon
+                        onClick={() => handleDeleteReview({ id: review.id })}
+                      >
+                        <IoTrashOutline size={20} className="text-pink-500" />
+                      </ActionIcon>
+                    </Group>
+                  </Group>
                 </Group>
-              </Group>
-            </Group>
-          ))}
+              ))}
         </Stack>
       </Container>
     </div>
