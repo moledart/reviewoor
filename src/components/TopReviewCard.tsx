@@ -21,6 +21,8 @@ export const TopReviewCard = ({ review }: { review: ReviewCardProps }) => {
             className="object-cover"
             priority
             quality={50}
+            placeholder="blur"
+            blurDataURL="/favicon/favicon-16x16.png"
           />
         </Box>
         <CardContent {...review} />
