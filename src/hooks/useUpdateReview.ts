@@ -5,13 +5,12 @@ import { trpc } from "../utils/trpc";
 import { saveImageToStorage } from "../utils/utils";
 import { useRouter } from "next/router";
 import { initialFormData } from "../atoms/reviewFormData";
-import { useState } from "react";
 
 export const useUpdateReview = () => {
   const ctx = trpc.useContext();
   const router = useRouter();
   const [formData, setFormData] = useAtom(reviewFormData.dataAtom);
-  const [thumbnailBlob] = useAtom(thumbnailBlobAtom);
+  const [thumbnailBlob, setThumbnailBlob] = useAtom(thumbnailBlobAtom);
 
   const {
     mutate: updateReview,
@@ -20,6 +19,7 @@ export const useUpdateReview = () => {
   } = trpc.review.update.useMutation({
     onSuccess: (data) => {
       setFormData(initialFormData);
+      setThumbnailBlob([]);
       ctx.review.invalidate();
       ctx.review.getFullContentById.invalidate({ id: data.id });
       router.push(`/review/${data.id}`);
