@@ -6,12 +6,12 @@ import { getStorage } from "firebase/storage";
 
 // Your web app's Firebase configuration
 const firebaseConfig = {
-  apiKey: "AIzaSyAZtuyd8y1FqUixCWiMuYS-dc9Osg2t4Ew",
-  authDomain: "itra-course-2d3f3.firebaseapp.com",
-  projectId: "itra-course-2d3f3",
-  storageBucket: "itra-course-2d3f3.appspot.com",
-  messagingSenderId: "1086333159172",
-  appId: "1:1086333159172:web:ce44d700c635c262353251",
+  apiKey: "AIzaSyBGt3DQVPYEEUNfehzEAIMglv9Cu6dQq1I",
+  authDomain: "reviewoor-5c6c1.firebaseapp.com",
+  projectId: "reviewoor-5c6c1",
+  storageBucket: "reviewoor-5c6c1.appspot.com",
+  messagingSenderId: "241607435334",
+  appId: "1:241607435334:web:41145b1c85c969ff311647",
 };
 
 // Initialize Firebase

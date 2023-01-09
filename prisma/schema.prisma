@@ -78,7 +78,7 @@ model Review {
   thumbnail       String?       @db.VarChar(1000)
   title           String
   subtitle        String?       @db.VarChar(1000)
-  author          User          @relation(fields: [authorId], references: [id])
+  author          User          @relation(fields: [authorId], references: [id], onDelete: Cascade)
   authorId        String
   reviewedPiece   ReviewedPiece @relation(fields: [reviewedPieceId], references: [id])
   reviewedPieceId String
@@ -111,7 +111,7 @@ model Group {
 model Comment {
   id        String   @id @default(cuid())
   createdAt DateTime @default(now())
-  user      User     @relation(fields: [userId], references: [id])
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId    String
   review    Review   @relation(fields: [reviewId], references: [id], onDelete: Cascade)
   reviewId  String
@@ -119,7 +119,7 @@ model Comment {
 
 model Like {
   id       String @id @default(cuid())
-  user     User   @relation(fields: [userId], references: [id])
+  user     User   @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId   String
   review   Review @relation(fields: [reviewId], references: [id], onDelete: Cascade)
   reviewId String
@@ -128,7 +128,7 @@ model Like {
 model UserRating {
   id       String @id @default(cuid())
   rating   Int
-  user     User   @relation(fields: [userId], references: [id])
+  user     User   @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId   String
   review   Review @relation(fields: [reviewId], references: [id], onDelete: Cascade)
   reviewId String
